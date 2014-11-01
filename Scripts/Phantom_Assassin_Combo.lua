@@ -24,7 +24,7 @@ local activated = false
 
 function Tick( tick )
 	if not client.connected or client.loading or client.console or (sleepTick and sleepTick > tick) or not activated then
-		text.text = "Script Not Activated!"
+		-- "Script Not Activated!"
 		return
 	end
  
@@ -32,7 +32,7 @@ function Tick( tick )
 	if not me then return end Sleep(125)
  
 	if me.classId ~= CDOTA_Unit_Hero_PhantomAssassin then
-		text.text = "Script Disabled!"
+		-- "Script Disabled!"
 		script:Disable()
 	else
 		-- Get Hero Abilities
