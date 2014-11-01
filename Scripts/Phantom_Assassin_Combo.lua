@@ -2,15 +2,20 @@
 --     LIBRARIES     --
 --===================--
 require("libs.ScriptConfig")
+require("libs.TargetFind")
 
 --===================--
 --      CONFIG       --
 --===================--
 config = ScriptConfig.new()
 config:SetParameter("ComboKey", "R", config.TYPE_HOTKEY)
+config:SetParameter("ClosestTarget", true)
+config:SetParameter("TargetWithLeastHP", false)
 config:Load()
 
 local ComboKey = config.ComboKey
+local ClosestTarget = config.ClosestTarget 
+local TargetWithLeastHP = config.TargetWithLeastHP
 local range = 1000
 
 --===================--
@@ -20,11 +25,9 @@ local target = nil
 local sleepTick = nil
 local activated = false
 
-
-
 function Tick( tick )
 	if not client.connected or client.loading or client.console or (sleepTick and sleepTick > tick) or not activated then
-		-- "Script Not Activated!"
+		--"Script Not Activated!"
 		return
 	end
  
@@ -32,7 +35,7 @@ function Tick( tick )
 	if not me then return end Sleep(125)
  
 	if me.classId ~= CDOTA_Unit_Hero_PhantomAssassin then
-		-- "Script Disabled!"
+		--"Script Disabled!"
 		script:Disable()
 	else
 		-- Get Hero Abilities
@@ -44,14 +47,21 @@ function Tick( tick )
 		
 		for i,v in ipairs(enemies) do
 			local distance = GetDistance2D(v,me)
-			-- Get a valid target
+			
+			-- Get a valid target in range 
 			if not target and distance < range then
 				target = v
 			end
 			
-			-- Get the closest target
-			if target and distance < GetDistance2D(target,me) then
-				target = v
+			-- Get the closest / least health target
+			if target then
+				if TargetWithLeastHP and distance < range then
+					target = targetFind:GetLowestEHP(range,"phys")
+				elseif closestTarget and distance < GetDistance2D(target,me) then
+					target = v
+				elseif GetDistance2D(target,me) > range or not target.alive then
+					target = nil
+				end
 			end
 		end
 		
