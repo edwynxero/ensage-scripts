@@ -13,7 +13,6 @@ config:SetParameter("TargetWithLeastHP", false)
 config:Load()
 
 local ComboKey = config.ComboKey
-local ClosestTarget = config.ClosestTarget 
 local TargetWithLeastHP = config.TargetWithLeastHP
 local range = 1000
 
