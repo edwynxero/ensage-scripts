@@ -9,11 +9,11 @@ require("libs.TargetFind")
 --===================--
 config = ScriptConfig.new()
 config:SetParameter("ComboKey", "R", config.TYPE_HOTKEY)
-config:SetParameter("TargetWithLeastHP", false)
+config:SetParameter("GetTargetWithLeastHP", false)
 config:Load()
 
-local ComboKey = config.ComboKey
-local TargetWithLeastHP = config.TargetWithLeastHP
+local combokey = config.ComboKey
+local gethpconfig = config.GetTargetWithLeastHP
 local range = 1000
 
 --===================--
@@ -53,7 +53,7 @@ function Tick( tick )
 			
 			-- Get the closest / least health target
 			if target then
-				if TargetWithLeastHP and distance < range then
+				if gethpconfig and distance < range then
 					target = targetFind:GetLowestEHP(range,"phys")
 				elseif distance < GetDistance2D(target,me) then
 					target = v
@@ -81,7 +81,7 @@ end
 
 function Key( msg, code )
 	if client.console or client.chat then return end
-	if code == ComboKey then
+	if code == combokey then
 		activated = (msg == KEY_DOWN)
 	end
 end
