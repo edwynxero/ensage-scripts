@@ -9,7 +9,6 @@ require("libs.TargetFind")
 --===================--
 config = ScriptConfig.new()
 config:SetParameter("ComboKey", "R", config.TYPE_HOTKEY)
-config:SetParameter("ClosestTarget", true)
 config:SetParameter("TargetWithLeastHP", false)
 config:Load()
 
@@ -57,7 +56,7 @@ function Tick( tick )
 			if target then
 				if TargetWithLeastHP and distance < range then
 					target = targetFind:GetLowestEHP(range,"phys")
-				elseif closestTarget and distance < GetDistance2D(target,me) then
+				elseif distance < GetDistance2D(target,me) then
 					target = v
 				elseif GetDistance2D(target,me) > range or not target.alive then
 					target = nil
