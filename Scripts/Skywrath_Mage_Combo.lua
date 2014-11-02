@@ -23,6 +23,7 @@ local range = 900
 --===================--
 local target = nil
 local sleepTick = nil
+local activated = false
 
 -- define ability names
 local ArcaneBolt = nil
@@ -31,7 +32,7 @@ local AncientSeal = nil
 local MysticFlare = nil
 
 function Tick( tick )
-	if not client.connected or client.loading or client.console or (sleepTick and sleepTick > tick) then
+	if not client.connected or client.loading or client.console or (sleepTick and sleepTick > tick) or not activated then
 		--"Script Not Activated!"
 		return
 	end
@@ -70,6 +71,11 @@ function Tick( tick )
 					target = nil
 				end
 			end
+			
+			if target then 
+				CastCombo(target) 
+				return	
+			end
 		end
 		sleepTick = tick + 300
 	end
@@ -96,7 +102,7 @@ end
 function Key( msg, code )
 	if client.console or client.chat then return end
 	if code == combokey then
-		if target then CastCombo(target) return	end
+		activated = (msg == KEY_DOWN)
 	end
 end
  
