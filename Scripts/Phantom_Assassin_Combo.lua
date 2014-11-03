@@ -1,3 +1,5 @@
+--<< Phantom Assassin closest hero bombing! >>
+
 --===================--
 --     LIBRARIES     --
 --===================--
@@ -12,9 +14,9 @@ config:SetParameter("ComboKey", "R", config.TYPE_HOTKEY)
 config:SetParameter("GetTargetWithLeastHP", false)
 config:Load()
 
-local combokey = config.ComboKey
-local gethpconfig = config.GetTargetWithLeastHP
-local range = 1000
+local combokey 		= config.ComboKey
+local gethpconfig 	= config.GetTargetWithLeastHP
+local range 		= 1000
 
 --===================--
 --       CODE        --
