@@ -1,3 +1,5 @@
+--<< The epic Skywrath Mage Combo! >>
+
 --===================--
 --     LIBRARIES     --
 --===================--
@@ -13,23 +15,23 @@ config:SetParameter("UseMysticFlare", false)
 config:SetParameter("GetTargetWithLeastHP", false)
 config:Load()
 
-local combokey = config.ComboKey
-local gethpconfig = config.GetTargetWithLeastHP
-local useultimate = config.UseMysticFlare
-local range = 900
+local combokey 		= config.ComboKey
+local gethpconfig 	= config.GetTargetWithLeastHP
+local useultimate 	= config.UseMysticFlare
+local range 		= 900
 
 --===================--
 --       CODE        --
 --===================--
-local target = nil
+local target 	= nil
 local sleepTick = nil
 local activated = false
 
 -- define ability names
-local ArcaneBolt = nil
-local ConcussiveShot = nil
-local AncientSeal = nil
-local MysticFlare = nil
+local ArcaneBolt 		= nil
+local ConcussiveShot	= nil
+local AncientSeal 		= nil
+local MysticFlare 		= nil
 
 function Tick( tick )
 	if not client.connected or client.loading or client.console or (sleepTick and sleepTick > tick) or not activated then
@@ -45,10 +47,10 @@ function Tick( tick )
 		script:Disable()
 	else
 		-- Get Hero Abilities
-		ArcaneBolt = me:GetAbility(1)
-		ConcussiveShot = me:GetAbility(2)
-		AncientSeal = me:GetAbility(3)
-		MysticFlare = me:GetAbility(4)
+		ArcaneBolt 		= me:GetAbility(1)
+		ConcussiveShot 	= me:GetAbility(2)
+		AncientSeal 	= me:GetAbility(3)
+		MysticFlare 	= me:GetAbility(4)
 		
 		-- Get Visible Enemies
 		local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO, visible = true, alive = true, team = me:GetEnemyTeam(), illusion=false})
@@ -72,7 +74,7 @@ function Tick( tick )
 				end
 			end
 			
-			if target then 
+			if target then
 				CastCombo(target) 
 				return	
 			end
