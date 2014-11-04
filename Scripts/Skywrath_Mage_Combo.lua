@@ -80,7 +80,7 @@ function Tick(tick)
 	end
 	
 	-- Do the combo! --
-	if (target and target.alive) and me.alive then
+	if target and me.alive then
 		CastSpell(ArcaneBolt,target)
 		CastSpell(AncientSeal,target)
 		CastSpell(ConcussiveShot,nil)
