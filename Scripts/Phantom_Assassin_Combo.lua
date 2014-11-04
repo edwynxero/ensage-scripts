@@ -68,7 +68,7 @@ function Tick(tick)
 		if target then
 			if getLeastHP and distance < range then
 				target = targetFind:GetLowestEHP(range,"phys")
-			elseif distance < GetDistance2D(target,me) then
+			elseif distance < GetDistance2D(target,me) and target.alive then
 				target = v
 			elseif GetDistance2D(target,me) > range or not target.alive then
 				target = nil
