@@ -24,13 +24,11 @@ require("libs.TargetFind")
 --CONFIG
 config = ScriptConfig.new()
 config:SetParameter("ComboKey", "D", config.TYPE_HOTKEY)
-config:SetParameter("UseMysticFlare", false)
 config:SetParameter("TargetLeastHP", false)
 config:Load()
 
 --SETTINGS
 local comboKey       = config.ComboKey
-local useMysticFlare = config.UseMysticFlare
 local getLeastHP     = config.TargetLeastHP
 local registered     = false
 local range          = 650
