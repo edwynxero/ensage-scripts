@@ -112,13 +112,16 @@ function Tick(tick)
 			comboState = 1
 			Sleep(850)
         elseif comboState == 1 then
-			CastSpell(me:FindItem("item_cyclone"),target)
 			CastSpell(IceVortex,target.position,true)
 			CastSpell(ChillingTouch,me.position,true)
-			comboState = 2
-			Sleep(2500)
+			if me:FindItem("item_cyclone") then
+				CastSpell(me:FindItem("item_cyclone"),target)
+				comboState = 2
+				Sleep(2500)
+			else
+				comboState = 2
+			end
 		else
-			comboState = comboState + 1
 			CastSpell(IceBlast,target.position)
 		end
 		return
