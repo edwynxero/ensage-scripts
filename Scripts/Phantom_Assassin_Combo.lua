@@ -98,7 +98,6 @@ function GameClose()
 		script:UnregisterEvent(Key)
 		script:RegisterEvent(EVENT_TICK,Load)
 		reg = false
-		statusText.visible = false
 	end
 end
 
