@@ -84,7 +84,7 @@ function Tick(tick)
 		CastSpell(ArcaneBolt,target)
 		CastSpell(AncientSeal,target)
 		CastSpell(ConcussiveShot,nil)
-		if useMysticFlare then CastSpell(ConcussiveShot,target.position) end
+		if useMysticFlare then CastSpell(MysticFlare,target.position) end
 		me:Attack(target)
 		return
 	end
