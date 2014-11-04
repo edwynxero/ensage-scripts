@@ -1,4 +1,23 @@
---<<The epic Skywrath Mage Combo!>>
+--[[
+	--------------------------------------
+	| Skywrath Combo Script by edwynxero |
+	--------------------------------------
+	============= Version 1.1 ============
+	 
+	Description:
+	------------
+		Skywrath Mage Ultimate Combo
+			- Arcane Bolt
+			- Ancient Seal
+			- Concussive Shot
+			- Mystic Flare (if enabled)
+		Features
+			- Excludes Illusions
+			- One Key Combo Toggle
+		*Has enabling function for using ultimate in combo, but currently works perfectly only on static heroes (i.e. stunned)
+
+]]--
+
 
 --LIBRARIES
 require("libs.ScriptConfig")
