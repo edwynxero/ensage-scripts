@@ -32,7 +32,7 @@ config:Load()
 local comboKey       = config.ComboKey
 local useMysticFlare = config.UseMysticFlare
 local getLeastHP     = config.TargetLeastHP
-local registered	 = false
+local registered     = false
 local range          = 650
 
 --CODE
