@@ -75,6 +75,7 @@ function Tick(tick)
 				target = v
 			elseif GetDistance2D(target,me) > range or not target.alive then
 				target = nil
+				active = false
 			end
 		end
 	end
