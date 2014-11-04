@@ -2,7 +2,7 @@
 	--------------------------------------
 	| Skywrath Combo Script by edwynxero |
 	--------------------------------------
-	============= Version 1.1 ============
+	============= Version 1.2 ============
 	 
 	Description:
 	------------
@@ -10,14 +10,13 @@
 			- Arcane Bolt
 			- Ancient Seal
 			- Concussive Shot
+			- Rod of Atos (if MysticFlare enabled)
 			- Mystic Flare (if enabled)
 		Features
 			- Excludes Illusions
 			- One Key Combo Toggle
 		*Has enabling function for using ultimate in combo, but currently works perfectly only on static heroes (i.e. stunned)
-
 ]]--
-
 
 --LIBRARIES
 require("libs.ScriptConfig")
@@ -34,11 +33,14 @@ config:Load()
 local comboKey       = config.ComboKey
 local useMysticFlare = config.UseMysticFlare
 local getLeastHP     = config.TargetLeastHP
+local registered	 = false
 local range          = 900
 
 --CODE
-local target 	= nil
-local active 	= false
+local sleepTick     = 0
+local currentTick   = 0
+local target        = nil
+local active        = false
 
 --[[Loading Script...]]
 function Load()
@@ -47,7 +49,7 @@ function Load()
 		if not me or me.classId ~= CDOTA_Unit_Hero_Skywrath_Mage then
 			script:Disable()
 		else
-			reg = true
+			registered = true
 			script:RegisterEvent(EVENT_TICK,Tick)
 			script:RegisterEvent(EVENT_KEY,Key)
 			script:UnregisterEvent(Load)
@@ -58,12 +60,13 @@ end
 --check if comboKey is pressed
 function Key(msg,code)
 	if client.chat or client.console or client.loading then return end
-	if IsKeyDown(comboKey) then
-		active = not active
+	if code == comboKey then
+		active = (msg == KEY_DOWN)
 	end
 end
 
 function Tick(tick)
+	currentTick = tick
 	if not SleepCheck() then return end Sleep(200)
 	
 	local me = entityList:GetMyHero()
@@ -101,32 +104,47 @@ function Tick(tick)
 	
 	-- Do the combo! --
 	if target and me.alive then
-		CastSpell(ArcaneBolt,target)
-		CastSpell(AncientSeal,target)
-		CastSpell(ConcussiveShot,nil)
-		if useMysticFlare then CastSpell(MysticFlare,target.position) end
+		CastSpell(ArcaneBolt, target)
+		CastSpell(AncientSeal, target)
+		CastSpell(ConcussiveShot)
+		if useMysticFlare then
+			if me:FindItem("item_rod_of_atos") then
+				CastSpell(me:FindItem("item_rod_of_atos"), target)
+			end
+			CastSpell(MysticFlare, target.position, true) 
+		end
 		return
 	end
 
 end
 
-function CastSpell(spell,victim)
+function CastSpell(spell,victim, isQueued)
 	if spell.state == LuaEntityAbility.STATE_READY then
 		if victim == nil then
 			entityList:GetMyPlayer():UseAbility(spell)
+		elseif isQueued == nil then
+			entityList:GetMyPlayer():UseAbility(spell, victim)
 		else
-			entityList:GetMyPlayer():UseAbility(spell,victim)
+			entityList:GetMyPlayer():UseAbility(spell, victim, isQueued)
 		end
 	end
 end
 
+function Sleep(duration)
+	sleepTick = currentTick + duration
+end
+ 
+function SleepCheck()
+	return sleepTick == nil or currentTick > sleepTick
+end
+
 function GameClose()
 	collectgarbage("collect")
-	if reg then
+	if registered then
 		script:UnregisterEvent(Tick)
 		script:UnregisterEvent(Key)
 		script:RegisterEvent(EVENT_TICK,Load)
-		reg = false
+		registered = false
 	end
 end
 
