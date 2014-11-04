@@ -1,4 +1,19 @@
---<< Phantom Assassin closest hero bombing! >>
+--[[
+	----------------------------------------------
+	| Phantom Assassin Combo Script by edwynxero |
+	----------------------------------------------
+	================= Version 1.1 ================
+	 
+	Description:
+	------------
+		Phantom Assassin Ultimate Combo
+			- Stifling Dagger
+			- Phantom Strike
+			- Abbysal Blade (work in progress)
+		Features
+			- Excludes Illusions
+			- One Key Combo Initiator (keep key pressed to continue combo)
+]]--
 
 --LIBRARIES
 require("libs.ScriptConfig")
@@ -17,7 +32,7 @@ local range 		= 1000
 
 --CODE
 local target	= nil
-local reg	= false
+local reg		= false
 local active	= false
 
 --[[Loading Script...]]
