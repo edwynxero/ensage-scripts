@@ -16,9 +16,9 @@ local getLeastHP 	= config.TargetLeastHP
 local range 		= 1000
 
 --CODE
-local target 	= nil
-local reg 		= false
-local active 	= false
+local target	= nil
+local reg	= false
+local active	= false
 
 --[[Loading Script...]]
 function Load()
