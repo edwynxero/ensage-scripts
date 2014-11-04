@@ -12,10 +12,10 @@ config:SetParameter("TargetLeastHP", false)
 config:Load()
 
 --SETTINGS
-local comboKey 		 = config.ComboKey
+local comboKe		 = config.ComboKey
 local useMysticFlare = config.UseMysticFlare
-local getLeastHP 	 = config.TargetLeastHP
-local range 		 = 900
+local getLeastHP	 = config.TargetLeastHP
+local rang			 = 900
 
 --CODE
 local target 	= nil
