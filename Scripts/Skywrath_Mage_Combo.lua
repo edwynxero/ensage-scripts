@@ -1,112 +1,116 @@
---<< The epic Skywrath Mage Combo! >>
+--<<The epic Skywrath Mage Combo!>>
 
---===================--
---     LIBRARIES     --
---===================--
+--LIBRARIES
 require("libs.ScriptConfig")
 require("libs.TargetFind")
 
---===================--
---      CONFIG       --
---===================--
+--CONFIG
 config = ScriptConfig.new()
 config:SetParameter("ComboKey", "D", config.TYPE_HOTKEY)
 config:SetParameter("UseMysticFlare", false)
-config:SetParameter("GetTargetWithLeastHP", false)
+config:SetParameter("TargetLeastHP", false)
 config:Load()
 
-local combokey 		= config.ComboKey
-local gethpconfig 	= config.GetTargetWithLeastHP
-local useultimate 	= config.UseMysticFlare
-local range 		= 900
+--SETTINGS
+local comboKey 		 = config.ComboKey
+local useMysticFlare = config.UseMysticFlare
+local getLeastHP 	 = config.TargetLeastHP
+local range 		 = 900
 
---===================--
---       CODE        --
---===================--
+--CODE
 local target 	= nil
-local sleepTick = nil
-local activated = false
+local active 	= false
 
--- define ability names
-local ArcaneBolt 		= nil
-local ConcussiveShot	= nil
-local AncientSeal 		= nil
-local MysticFlare 		= nil
-
-function Tick( tick )
-	if not client.connected or client.loading or client.console or (sleepTick and sleepTick > tick) or not activated then
-		--"Script Not Activated!"
-		return
+--[[Loading Script...]]
+function Load()
+	if PlayingGame() then
+		local me = entityList:GetMyHero()
+		if not me or me.classId ~= CDOTA_Unit_Hero_Skywrath_Mage then
+			script:Disable()
+		else
+			reg = true
+			script:RegisterEvent(EVENT_TICK,Tick)
+			script:RegisterEvent(EVENT_KEY,Key)
+			script:UnregisterEvent(Load)
+		end
 	end
- 
+end
+
+--check if comboKey is pressed
+function Key(msg,code)
+	if client.chat or client.console or client.loading then return end
+	if IsKeyDown(comboKey) then
+		active = not active
+	end
+end
+
+function Tick(tick)
+	if not SleepCheck() then return end Sleep(200)
+	
 	local me = entityList:GetMyHero()
-	if not me then return end Sleep(125)
- 
-	if me.classId ~= CDOTA_Unit_Hero_Skywrath_Mage then
-		--"Script Disabled!"
-		script:Disable()
-	else
-		-- Get Hero Abilities
-		ArcaneBolt 		= me:GetAbility(1)
-		ConcussiveShot 	= me:GetAbility(2)
-		AncientSeal 	= me:GetAbility(3)
-		MysticFlare 	= me:GetAbility(4)
+	if not (me and active) then return end
+	
+	-- Get hero abilities --
+	local ArcaneBolt 	 = me:GetAbility(1)
+	local ConcussiveShot = me:GetAbility(2)
+	local AncientSeal 	 = me:GetAbility(3)
+	local MysticFlare 	 = me:GetAbility(4)
+	
+	-- Get visible enemies --
+	local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO, visible = true, alive = true, team = me:GetEnemyTeam(), illusion=false})
+	
+	for i,v in ipairs(enemies) do
+		local distance = GetDistance2D(v,me)
 		
-		-- Get Visible Enemies
-		local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO, visible = true, alive = true, team = me:GetEnemyTeam(), illusion=false})
+		-- Get a valid target in range --
+		if not target and distance < range then
+			target = v
+		end
 		
-		for i,v in ipairs(enemies) do
-			local distance = GetDistance2D(v,me)
-			
-			-- Get a valid target in range 
-			if not target and distance < range then
+		-- Get the closest / least health target --
+		if target then
+			if getLeastHP and distance < range then
+				target = targetFind:GetLowestEHP(range,"magic")
+			elseif distance < GetDistance2D(target,me) then
 				target = v
-			end
-			
-			-- Get the closest / least health target
-			if target then
-				if gethpconfig and distance < range then
-					target = targetFind:GetLowestEHP(range,"phys")
-				elseif distance < GetDistance2D(target,me) then
-					target = v
-				elseif GetDistance2D(target,me) > range or not target.alive then
-					target = nil
-				end
-			end
-			
-			if target then
-				CastCombo(target) 
-				return	
+			elseif GetDistance2D(target,me) > range or not target.alive then
+				target = nil
 			end
 		end
-		sleepTick = tick + 300
+	end
+	
+	-- Do the combo! --
+	if (target and target.alive) and me.alive then
+		CastSpell(ArcaneBolt,target)
+		CastSpell(AncientSeal,target)
+		CastSpell(ConcussiveShot,nil)
+		if useMysticFlare then CastSpell(ConcussiveShot,target.position) end
+		me:Attack(target)
+		return
+	end
+
+end
+
+function CastSpell(spell,victim)
+	if spell.state == LuaEntityAbility.STATE_READY then
+		if victim == nil then
+			entityList:GetMyPlayer():UseAbility(spell)
+		else
+			entityList:GetMyPlayer():UseAbility(spell,victim)
+		end
 	end
 end
 
-function CastCombo(victim)
-	if ArcaneBolt.state == LuaEntityAbility.STATE_READY then
-		entityList:GetMyPlayer():UseAbility(ArcaneBolt,victim)
-		Sleep(125)
-	end
-	if AncientSeal.state == LuaEntityAbility.STATE_READY then
-		entityList:GetMyPlayer():UseAbility(AncientSeal,victim)
-		Sleep(125)
-	end
-	if ConcussiveShot.state == LuaEntityAbility.STATE_READY then
-		entityList:GetMyPlayer():UseAbility(ConcussiveShot)
-		Sleep(125)
-	end
-	if MysticFlare.state == LuaEntityAbility.STATE_READY and useultimate then
-		entityList:GetMyPlayer():UseAbility(MysticFlare,victim.position)
+function GameClose()
+	collectgarbage("collect")
+	if reg then
+		script:UnregisterEvent(Tick)
+		script:UnregisterEvent(Key)
+		script:RegisterEvent(EVENT_TICK,Load)
+		reg = false
+		statusText.visible = false
 	end
 end
 
-function Key( msg, code )
-	if client.console or client.chat then return end
-	if code == combokey then
-		activated = (msg == KEY_DOWN)
-	end
-end
- 
-script:RegisterEvent(EVENT_TICK,Tick)
-script:RegisterEvent(EVENT_KEY,Key)
+script:RegisterEvent(EVENT_CLOSE,GameClose)
+script:RegisterEvent(EVENT_TICK,Load)
