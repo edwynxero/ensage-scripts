@@ -12,10 +12,10 @@ config:SetParameter("TargetLeastHP", false)
 config:Load()
 
 --SETTINGS
-local comboKey 	     = config.ComboKey
-local useMysticFlare = config.UseMysticFlare
-local getLeastHP     = config.TargetLeastHP
-local range 	     = 900
+local comboKey			= config.ComboKey
+local useMysticFlare	= config.UseMysticFlare
+local getLeastHP		= config.TargetLeastHP
+local range				= 900
 
 --CODE
 local target 	= nil
@@ -51,10 +51,10 @@ function Tick(tick)
 	if not (me and active) then return end
 	
 	-- Get hero abilities --
-	local ArcaneBolt     = me:GetAbility(1)
-	local ConcussiveShot = me:GetAbility(2)
-	local AncientSeal    = me:GetAbility(3)
-	local MysticFlare    = me:GetAbility(4)
+	local ArcaneBolt		= me:GetAbility(1)
+	local ConcussiveShot	= me:GetAbility(2)
+	local AncientSeal		= me:GetAbility(3)
+	local MysticFlare		= me:GetAbility(4)
 	
 	-- Get visible enemies --
 	local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO, visible = true, alive = true, team = me:GetEnemyTeam(), illusion=false})
