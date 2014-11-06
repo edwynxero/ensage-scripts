@@ -63,7 +63,6 @@ local aegisLoc   = Vector(4164,-1831,0)
 local eFistLoc   = Vector(4077,-2143,0)
 
 statusText.visible = false
---local shortloc   = Vector(4596,-1665,242)
 
 local hotkeyText -- toggleKey might be a keycode number, so string.char will throw an error!!
 if string.byte("A") <= toggleKey and toggleKey <= string.byte("Z") then
