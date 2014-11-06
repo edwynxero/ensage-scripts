@@ -47,27 +47,31 @@ require("libs.ScriptConfig")
 
 --CONFIG
 local config = ScriptConfig.new()
-config:SetParameter("ToggleKey", "J", config.TYPE_HOTKEY)
+config:SetParameter("StealAegis", "J", config.TYPE_HOTKEY)
+config:SetParameter("DenyAegis", "K", config.TYPE_HOTKEY)
 config:Load()
 
 --SETTINGS
-local monitor    = client.screenSize.x/1600
-local toggleKey  = config.ToggleKey
-local active     = false
-local registered = false
+local monitor     = client.screenSize.x/1600
+local stealKey    = config.StealAegis
+local denyKey     = config.DenyAegis
+local stealActive = false
+local denyActive  = false
+local registered  = false
 
 --CODE
-local F14        = drawMgr:CreateFont("F14","Tahoma",14*monitor,550*monitor) 
-local statusText = drawMgr:CreateText(10*monitor,590*monitor,-1,"( Key: " .. string.char(toggleKey) .. " ) Steal Aegis: OFF",F14)
-local aegisLoc   = Vector(4164,-1831,0)
-local eFistLoc   = Vector(4077,-2143,0)
-
 local hotkeyText -- toggleKey might be a keycode number, so string.char will throw an error!!
-if string.byte("A") <= toggleKey and toggleKey <= string.byte("Z") then
-	hotkeyText = string.char(toggleKey)
+if string.byte("A") <= stealKey and stealKey <= string.byte("Z") then
+	hotkeyText = string.char(stealKey) .." | "..string.char(denyKey)
 else
-	hotkeyText = ""..toggleKey
+	hotkeyText = ""..stealKey.." | "..denyKey
 end
+
+local F14        = drawMgr:CreateFont("F14","Tahoma",14*monitor,550*monitor) 
+local statusText = drawMgr:CreateText(10*monitor,590*monitor,-1,"( Key: " .. hotkeyText .. " ) Steal | Deny Aegis: OFF | OFF",F14)
+local aegisLoc   = Vector(4164,-1831,0)
+local spellLoc   = Vector(4077,-2143,0)
+local aegisDeny  = nil
 
 --[[Loading Script...]]
 function Load()
@@ -85,15 +89,30 @@ function Load()
 	end
 end
 
---check if toggleKey is pressed
+--check if steal/deny Key is pressed
 function Key(msg,code)
 	if client.chat or client.console or client.loading then return end
-	if IsKeyDown(toggleKey) then
-		active = not active
-		if active then
-			statusText.text = "( Key: " .. hotkeyText .. " ) Steal Aegis: ON"
+	if IsKeyDown(stealKey) then
+		stealActive = not stealActive
+		if stealActive and denyActive then
+			statusText.text = "( Key: " .. hotkeyText .. " ) Steal | Deny Aegis: ON | ON"
+		elseif stealActive and not denyActive then
+			statusText.text = "( Key: " .. hotkeyText .. " ) Steal | Deny Aegis: ON | OFF"
+		elseif not stealActive and denyActive then
+			statusText.text = "( Key: " .. hotkeyText .. " ) Steal | Deny Aegis: OFF | ON"
 		else
-			statusText.text = "( Key: " .. hotkeyText .. " ) Steal Aegis: OFF"
+			statusText.text = "( Key: " .. hotkeyText .. " ) Steal | Deny Aegis: OFF | OFF"
+		end
+	elseif IsKeyDown(denyKey) then
+		denyActive = not denyActive
+		if denyActive and stealActive then
+			statusText.text = "( Key: " .. hotkeyText .. " ) Steal | Deny Aegis: ON | ON"
+		elseif not denyActive and stealActive then
+			statusText.text = "( Key: " .. hotkeyText .. " ) Steal | Deny Aegis: ON | OFF"
+		elseif denyActive and not stealActive then
+			statusText.text = "( Key: " .. hotkeyText .. " ) Steal | Deny Aegis: OFF | ON"
+		else
+			statusText.text = "( Key: " .. hotkeyText .. " ) Steal | Deny Aegis: OFF | OFF"
 		end
 	end
 end
@@ -102,7 +121,7 @@ function Tick(tick)
 	if not SleepCheck() then return end
 	
 	local me = entityList:GetMyHero()
-	if not (me and active) then return end
+	if not (me and (stealActive or denyActive)) then return end
 	
 	local myID = me.classId
 	local blinkDagger = me:FindItem("item_blink")
@@ -115,8 +134,11 @@ function Tick(tick)
 		local items = entityList:GetEntities({type=LuaEntity.TYPE_ITEM_PHYSICAL})
 		for i,v in ipairs(items) do
 			local IH = v.itemHolds
-			if IH.name == "item_aegis" and GetDistance2D(v,me) <= 400 then
+			if IH.name == "item_aegis" and GetDistance2D(v,me) <= 400 and stealActive then
 				entityList:GetMyPlayer():TakeItem(v)
+				break
+			elseif IH.name == "item_aegis" and denyActive and aegisDeny then
+				aegisDeny:Attack(v)
 				break
 			end
 		end
@@ -129,13 +151,13 @@ function Roshan (kill)
 		local myID        = me.classId
 		local blinkDagger = me:FindItem("item_blink")
 		
-		if kill.name == "dota_roshan_kill" and active then
+		if kill.name == "dota_roshan_kill" and stealActive then
 			if GetDistance2D(aegisLoc,me) <= 1200 and blinkDagger then
 				CastSpell(blinkDagger,aegisLoc)
 				
-			elseif myID == CDOTA_Unit_Hero_EmberSpirit and GetDistance2D(eFistLoc,me) <= 700 then
+			elseif myID == CDOTA_Unit_Hero_EmberSpirit and GetDistance2D(spellLoc,me) <= 700 then
 				local Slight_of_Fist = me:GetAbility(2)
-				CastSpell(Slight_of_Fist,eFistLoc)
+				CastSpell(Slight_of_Fist,spellLoc)
 				
 			elseif myID == CDOTA_Unit_Hero_AntiMage and GetDistance2D(aegisLoc,me) <= 1150 then
 				local AM_Blink = me:GetAbility(2)
@@ -177,8 +199,9 @@ function Roshan (kill)
 			elseif myID == CDOTA_Unit_Hero_StormSpirit and GetDistance2D(aegisLoc,me) <= 1000 then
 				local Ball_Lightning = me:GetAbility(4)
 				CastSpell(Ball_Lightning,aegisLoc)
-				
-			elseif myID == CDOTA_Unit_Hero_Sniper and GetDistance2D(aegisLoc,me) <= 950 then
+			end
+		elseif kill.name == "dota_roshan_kill" and denyActive then
+			if myID == CDOTA_Unit_Hero_Sniper and GetDistance2D(aegisLoc,me) <= 950 then
 				local Sharpnel = me:GetAbility(1)
 				local Take_Aim = me:GetAbility(3)
 				Take_Aim_Range = {100,200,300,400}
@@ -188,29 +211,15 @@ function Roshan (kill)
 				end
 				CastSpell(Sharpnel,aegisLoc)
 				if GetDistance2D(aegisLoc,me) <= me.attackRange + bonusrange then
-					local items = entityList:GetEntities({type=LuaEntity.TYPE_ITEM_PHYSICAL})
-					for i,v in ipairs(items) do
-						local IH = v.itemHolds
-						if IH.name == "item_aegis" then
-							me:Attack(v)
-							break
-						end
-					end
+					aegisDeny = me
 				end
 				
 			elseif myID == CDOTA_Unit_Hero_Venomancer then
 				local PlagueWard = me:GetAbility(3)
 				local ward = entityList:GetEntities({classId=CDOTA_BaseNPC_Venomancer_PlagueWard,alive = true,visible = true,controllable=true})
-				local items = entityList:GetEntities({type=LuaEntity.TYPE_ITEM_PHYSICAL})
-
-				CastSpell(PlagueWard,shortloc)
-				for i,v in ipairs(items) do
-					for l,k in ipairs(ward) do
-						local IH = v.itemHolds
-						if IH.name == "item_aegis" and GetDistance2D(v,me) <= k.castRange then
-							k:Attack(v)
-						end
-					end
+				CastSpell(PlagueWard,spellLoc)
+				for l,k in ipairs(ward) do
+					aegisDeny = k
 				end
 			end
 		end
