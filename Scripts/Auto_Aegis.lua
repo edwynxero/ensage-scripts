@@ -58,11 +58,9 @@ local registered = false
 
 --CODE
 local F14        = drawMgr:CreateFont("F14","Tahoma",14*monitor,550*monitor) 
-local statusText = drawMgr:CreateText(10*monitor,590*monitor,-1,"( Key:" .. string.char(toggleKey) .. " ) Steal Aegis: OFF",F14)
+local statusText = drawMgr:CreateText(10*monitor,590*monitor,-1,"( Key: " .. string.char(toggleKey) .. " ) Steal Aegis: OFF",F14)
 local aegisLoc   = Vector(4164,-1831,0)
 local eFistLoc   = Vector(4077,-2143,0)
-
-statusText.visible = false
 
 local hotkeyText -- toggleKey might be a keycode number, so string.char will throw an error!!
 if string.byte("A") <= toggleKey and toggleKey <= string.byte("Z") then
@@ -93,9 +91,9 @@ function Key(msg,code)
 	if IsKeyDown(toggleKey) then
 		active = not active
 		if active then
-			statusText.text = "( Key:" .. hotkeyText .. " ) Steal Aegis: ON"
+			statusText.text = "( Key: " .. hotkeyText .. " ) Steal Aegis: ON"
 		else
-			statusText.text = "( Key:" .. hotkeyText .. " ) Steal Aegis: OFF"
+			statusText.text = "( Key: " .. hotkeyText .. " ) Steal Aegis: OFF"
 		end
 	end
 end
