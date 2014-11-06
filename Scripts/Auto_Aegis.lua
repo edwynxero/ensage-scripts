@@ -6,7 +6,7 @@
 	
 	Description:
 	------------
-		Heroes TO DO :
+		Heroes ToDo :
 			===Steal===
 			- Earth Spirit Combo
 			- Spectre(Haunt -> Reality illusion closest to aegis->steal->spectral dagger out)
@@ -83,7 +83,7 @@ function Load()
 			registered = true
 			script:RegisterEvent(EVENT_TICK,Tick)
 			script:RegisterEvent(EVENT_KEY,Key)
-			script:RegisterEvent(EVENT_DOTA,Roshan) 
+			script:RegisterEvent(EVENT_DOTA,Roshan)
 			script:UnregisterEvent(Load)
 		end
 	end
@@ -118,10 +118,10 @@ function Key(msg,code)
 end
 
 function Tick(tick)
-	if not SleepCheck() then return end
+	if not SleepCheck() then return end Sleep(300)
 	
 	local me = entityList:GetMyHero()
-	if not (me and (stealActive or denyActive)) then return end
+	if not me and not (stealActive or denyActive) then return end
 	
 	local myID = me.classId
 	local blinkDagger = me:FindItem("item_blink")
@@ -200,7 +200,8 @@ function Roshan (kill)
 				local Ball_Lightning = me:GetAbility(4)
 				CastSpell(Ball_Lightning,aegisLoc)
 			end
-		elseif kill.name == "dota_roshan_kill" and denyActive then
+		end
+		if kill.name == "dota_roshan_kill" and denyActive then
 			if myID == CDOTA_Unit_Hero_Sniper and GetDistance2D(aegisLoc,me) <= 950 then
 				local Sharpnel = me:GetAbility(1)
 				local Take_Aim = me:GetAbility(3)
@@ -214,7 +215,7 @@ function Roshan (kill)
 					aegisDeny = me
 				end
 				
-			elseif myID == CDOTA_Unit_Hero_Venomancer then
+			elseif myID == CDOTA_Unit_Hero_Venomancer and GetDistance2D(aegisLoc,me) <= 950 then
 				local PlagueWard = me:GetAbility(3)
 				local ward = entityList:GetEntities({classId=CDOTA_BaseNPC_Venomancer_PlagueWard,alive = true,visible = true,controllable=true})
 				CastSpell(PlagueWard,spellLoc)
