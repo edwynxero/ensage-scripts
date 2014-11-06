@@ -11,17 +11,17 @@
 			- Earth Spirit Combo
 			- Spectre(Haunt -> Reality illusion closest to aegis->steal->spectral dagger out)
 			====Deny===
-			- Lycan (Invisible Wolves)
-			- Broodmother (Spiderlings)
-			- Enigma (Demonic Conversions)
-			- Invoker (Forged Spirits)
-			- Lone Druid (Bear)
-			- Naga Siren (Illusions)
+			- Lycan         (Invisible Wolves)
+			- Broodmother   (Spiderlings)
+			- Enigma        (Demonic Conversions)
+			- Invoker       (Forged Spirits)
+			- Lone Druid    (Bear)
+			- Naga Siren    (Illusions)
 			- Nature Profet (Nature Call)
 			- Shadow Shaman (Serpent ward)
-			- TerrorBlade (Illusions)
-			- Visage (Familiars)
-			- Warlock (Chaotic Offering Roshan-pit)
+			- TerrorBlade   (Illusions)
+			- Visage        (Familiars)
+			- Warlock       (Chaotic Offering Roshan-pit)
 
 		Stealing:
 			- Blink Dagger
@@ -195,7 +195,7 @@ function Roshan (kill)
 					for i,v in ipairs(items) do
 						local IH = v.itemHolds
 						if IH.name == "item_aegis" then
-							me:Attack(v.itemHolds)
+							me:Attack(v)
 							break
 						end
 					end
