@@ -17,7 +17,7 @@
 			- Invoker (Forged Spirits)
 			- Lone Druid (Bear)
 			- Naga Siren (Illusions)
-			- Nature Proffet (Nature Call)
+			- Nature Profet (Nature Call)
 			- Shadow Shaman (Serpent ward)
 			- TerrorBlade (Illusions)
 			- Visage (Familiars)
