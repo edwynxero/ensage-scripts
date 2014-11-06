@@ -112,7 +112,6 @@ function Tick(tick)
 	end
 	
 	if me.alive and not me:IsChanneling() then
-		print(me.attackRange)
 		local items = entityList:GetEntities({type=LuaEntity.TYPE_ITEM_PHYSICAL})
 		for i,v in ipairs(items) do
 			local IH = v.itemHolds
