@@ -20,7 +20,8 @@ config:SetParameter("TeleportBind", "T", config.TYPE_HOTKEY)
 config:Load()
 
 --SETTINGS
-local teleportKey    = config.TeleportBind
+local teleportKey = config.TeleportBind
+local registered  = false
 
 --CODE
 local baseLoc        = nil
