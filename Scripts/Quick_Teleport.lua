@@ -62,7 +62,6 @@ function Tick(tick)
 	local me = entityList:GetMyHero()
 	if not (me and teleportActive) then return end
 	
-	local myID = me.classId
 	local teleportScroll = me:FindItem("item_tpscroll")
 	
 	if me.alive and not me:IsChanneling() and teleportScroll then
