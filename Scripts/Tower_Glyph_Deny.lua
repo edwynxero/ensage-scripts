@@ -100,12 +100,6 @@ end
 
 function GetHeroDamage(me)
 	local damage =  me.dmgMin + me.dmgBonus
-	local items  = me.items
-	for i,item in ipairs(items) do
-		if item and item.name == "item_quelling_blade" then
-			return damage*1.32
-		end
-	end
 	return damage
 end
 
