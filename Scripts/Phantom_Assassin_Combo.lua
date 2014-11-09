@@ -28,12 +28,12 @@ config:Load()
 --SETTINGS
 local comboKey 		= config.ComboKey
 local getLeastHP 	= config.TargetLeastHP
+local registered	= false
 local range 		= 1000
 
 --CODE
-local target	= nil
-local reg		= false
-local active	= false
+local target	    = nil
+local active	    = false
 
 --[[Loading Script...]]
 function Load()
@@ -42,7 +42,7 @@ function Load()
 		if not me or me.classId ~= CDOTA_Unit_Hero_PhantomAssassin then
 			script:Disable()
 		else
-			reg = true
+			registered = true
 			script:RegisterEvent(EVENT_TICK,Tick)
 			script:RegisterEvent(EVENT_KEY,Key)
 			script:UnregisterEvent(Load)
@@ -76,23 +76,25 @@ function Tick(tick)
 		
 		-- Get a valid target in range --
 		if not target and distance < range then
-			target = v
+				target = v
 		end
 		
-		-- Get the closest / least health target --
+		-- Get the lowest health, if not get closest--
 		if target then
-			if getLeastHP and distance < range then
-				target = targetFind:GetLowestEHP(range,"phys")
-			elseif distance < GetDistance2D(target,me) and target.alive then
-				target = v
-			elseif GetDistance2D(target,me) > range or not target.alive then
+			if target.alive and target.visible then
+				if getLeastHP then
+					target = targetFind:GetLowestEHP(range,"phys")
+				elseif distance < GetDistance2D(target,me) then
+					target = v
+				end
+			else
 				target = nil
 			end
 		end
 	end
 	
 	-- Do the combo! --
-	if target and me.alive then
+	if target and me.alive and not me:IsChanneling() then
 		CastSpell(StiflingDagger,target)
 		CastSpell(PhantomStrike,target)
 		me:Attack(target)
@@ -108,11 +110,11 @@ end
 
 function GameClose()
 	collectgarbage("collect")
-	if reg then
+	if registered then
 		script:UnregisterEvent(Tick)
 		script:UnregisterEvent(Key)
 		script:RegisterEvent(EVENT_TICK,Load)
-		reg = false
+		registered = false
 	end
 end
 
