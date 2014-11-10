@@ -6,17 +6,17 @@
 
 	Description:
 	------------
-Shows warning for different skills!
+		Shows warning for different skills!
 
-Currently Includes:
-- Mirana's Moonlight Shadow
-- Spirit Breaker's Charge
-- Techies Mines Info
+		Currently Includes:
+			- Mirana's Moonlight Shadow
+			- Spirit Breaker's Charge
+			- Techies Mines Info
 
-To-Do:
-- Much More....
+		To-Do:
+			- Much More....
 
-*NOTE: You won't be warned if skill casted in fog of war!
+		*NOTE: You won't be warned if skill casted in fog of war!
 ]]--
 
 --LIBRARIES
@@ -29,15 +29,15 @@ require("libs.Utils")
 --CODE
 local registered = nil
 
---[[			Spirit Breaker			]]
+--[[            Spirit Breaker          ]]
 	local mode_bara = false
 	local isCharged = false
 
---[[				Mirana				]]
+--[[                Mirana              ]]
 	local mode_mirana      = false
 	local isMiranaUltimate = false
 
---[[				Techies				]]
+--[[                Techies             ]]
 	local MS        = {}
 	local TS        = {}
 	local table     = {}
