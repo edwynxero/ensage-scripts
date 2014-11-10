@@ -21,10 +21,19 @@
 
 --LIBRARIES
 require("libs.Utils")
+require("libs.ScriptConfig")
 
 --CONFIG
+config = ScriptConfig.new()
+config:SetParameter("detect_Mirana", true)
+config:SetParameter("detect_Spirit_Charge", true)
+config:SetParameter("detect_TechiesMines", true)
+config:Load()
 
 --SETTINGS
+local detect_Mirana        = config.detect_Mirana
+local detect_TechiesMines  = config.detect_TechiesMines
+local detect_Spirit_Charge = config.detect_Spirit_Charge
 
 --CODE
 local registered = nil
@@ -70,9 +79,9 @@ function Tick(tick)
 
 
 	for i,v in ipairs(enemies) do
-		if v.classId == CDOTA_Unit_Hero_Mirana then checkMirana(enemies) end
-		if v.classId == CDOTA_Unit_Hero_SpiritBreaker then checkCharge(teamies) end
-		if v.classId == CDOTA_Unit_Hero_Techies then checkMines(me.team) end
+		if v.classId == CDOTA_Unit_Hero_Mirana and detect_Mirana then checkMirana(enemies) end
+		if v.classId == CDOTA_Unit_Hero_SpiritBreaker and detect_Spirit_Charge then checkCharge(teamies) end
+		if v.classId == CDOTA_Unit_Hero_Techies and detect_TechiesMines then checkMines(me.team) end
 	end
 end
 
