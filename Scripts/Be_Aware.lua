@@ -6,17 +6,17 @@
 
 	Description:
 	------------
-		Shows warning for different skills!
+Shows warning for different skills!
 
-		Currently Includes:
-			- Mirana's Moonlight Shadow
-			- Spirit Breaker's Charge
-			- Techies Mines Info
+Currently Includes:
+- Mirana's Moonlight Shadow
+- Spirit Breaker's Charge
+- Techies Mines Info
 
-		To-Do:
-			- Much More....
+To-Do:
+- Much More....
 
-		*NOTE: You won't be warned if skill casted in fog of war!
+*NOTE: You won't be warned if skill casted in fog of war!
 ]]--
 
 --LIBRARIES
@@ -40,7 +40,7 @@ local registered = nil
 --[[				Techies				]]
 	local MS        = {}
 	local TS        = {}
-	local tabl      = {}
+	local table     = {}
 	local MinesInfo = {}
 	MinesInfo["npc_dota_techies_land_mine"]   = 150
 	MinesInfo["npc_dota_techies_stasis_trap"] = 450
@@ -134,7 +134,7 @@ function checkMines(team)
 					MS[v.handle].eff:SetVector(0, v.position)
 					local minimap = MapToMinimap(v.position.x,v.position.y)
 					MS[v.handle].minmap = drawMgr:CreateRect(minimap.x-10,minimap.y-10,18,18,0x000000FF,drawMgr:GetTextureId("NyanUI/other/"..v.name))
-					table.insert(tabl,v.handle)
+					table.insert(table,v.handle)
 				elseif MS[v.handle] and not v.alive then
 					clear = true
 					MS[v.handle] = nil
@@ -142,12 +142,12 @@ function checkMines(team)
 			end
 		end
 
-		for i,v in ipairs(tabl) do
+		for i,v in ipairs(table) do
 			if MS[v] then
 				local st = entityList:GetEntity(v)
 				if not st or not st.alive then
 					MS[v] = nil
-					table.remove(tabl, i)
+					table.remove(table, i)
 					clear = true
 				end
 			end
@@ -173,8 +173,8 @@ function GameClose()
 
 		------------Techies-------------
 		MS   = {}	TS        = {}
-		tabl = {}	MinesInfo = {}
-		------------Techies-------------
+		table = {}	MinesInfo = {}
+		--------------------------------
 
 		registered = false
 	end
