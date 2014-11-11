@@ -25,15 +25,15 @@ require("libs.ScriptConfig")
 
 --CONFIG
 config = ScriptConfig.new()
-config:SetParameter("detect_Mirana", true)
-config:SetParameter("detect_Spirit_Charge", true)
-config:SetParameter("detect_TechiesMines", true)
+config:SetParameter("detectMirana", true)
+config:SetParameter("detectSpiritCharge", true)
+config:SetParameter("detectTechiesMines", true)
 config:Load()
 
 --SETTINGS
-local detect_Mirana        = config.detect_Mirana
-local detect_TechiesMines  = config.detect_TechiesMines
-local detect_Spirit_Charge = config.detect_Spirit_Charge
+local detect_Mirana        = config.detectMirana
+local detect_TechiesMines  = config.detectTechiesMines
+local detect_Spirit_Charge = config.detectSpiritCharge
 
 --CODE
 local registered = nil
