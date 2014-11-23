@@ -2,8 +2,8 @@
 	----------------------------------------------
 	| Phantom Assassin Combo Script by edwynxero |
 	----------------------------------------------
-	================= Version 1.1 ================
-	 
+	================= Version 1.2 ================
+
 	Description:
 	------------
 		Phantom Assassin Ultimate Combo
@@ -59,26 +59,29 @@ function Key(msg,code)
 end
 
 function Tick(tick)
-	if not SleepCheck() then return end Sleep(200)
-	
+	if not SleepCheck() then return end
+
 	local me = entityList:GetMyHero()
+	local myPlayer = entityList:GetMyPlayer().selection[1]
 	if not (me and active) then return end
- 
+
 	-- Get hero abilities --
 	local StiflingDagger = me:GetAbility(1)
 	local PhantomStrike = me:GetAbility(2)
-	
+
 	-- Get visible enemies --
 	local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO, visible = true, alive = true, team = me:GetEnemyTeam(), illusion=false})
-	
+
 	for i,v in ipairs(enemies) do
 		local distance = GetDistance2D(v,me)
-		
+
 		-- Get a valid target in range --
 		if not target and distance < range then
-				target = v
+			target = v
+		elseif distance > range then
+			target = nil
 		end
-		
+
 		-- Get the lowest health, if not get closest--
 		if target then
 			if target.alive and target.visible then
@@ -92,12 +95,15 @@ function Tick(tick)
 			end
 		end
 	end
-	
+
 	-- Do the combo! --
 	if target and me.alive and not me:IsChanneling() then
-		CastSpell(StiflingDagger,target)
-		CastSpell(PhantomStrike,target)
-		me:Attack(target)
+		if myPlayer and myPlayer.handle == me.handle then
+			CastSpell(StiflingDagger,target)
+			CastSpell(PhantomStrike,target)
+			me:Attack(target)
+		end
+		Sleep(200)
 		return
 	end
 end
