@@ -1,9 +1,10 @@
+--<<Epic Ancient Apparition Combo | Version: 1.0>>
 --[[
 	------------------------------------------------
 	| Ancient Apparition Combo Script by edwynxero |
 	------------------------------------------------
 	================== Version 1.0 =================
-	 
+
 	Description:
 	------------
 		Ancient Apparition Ultimate Combo
@@ -41,16 +42,16 @@ local target      = nil
 local active      = false
 
 --[[Loading Script...]]
-function Load()
+function onLoad()
 	if PlayingGame() then
 		local me = entityList:GetMyHero()
 		if not me or me.classId ~= CDOTA_Unit_Hero_AncientApparition then
 			script:Disable()
 		else
 			registered = true
-			script:RegisterEvent(EVENT_TICK,Tick)
+			script:RegisterEvent(EVENT_TICK,Main)
 			script:RegisterEvent(EVENT_KEY,Key)
-			script:UnregisterEvent(Load)
+			script:UnregisterEvent(onLoad)
 		end
 	end
 end
@@ -66,30 +67,30 @@ function Key(msg,code)
 	end
 end
 
-function Tick(tick)
+function Main(tick)
 	currentTick = tick
 	if not SleepCheck() then return end Sleep(200)
-	
+
 	local me = entityList:GetMyHero()
 	if not (me and active) then return end
-	
+
 	-- Get hero abilities --
 	local ColdFeet      = me:GetAbility(1)
 	local IceVortex     = me:GetAbility(2)
 	local ChillingTouch = me:GetAbility(3)
 	local IceBlast      = me:GetAbility(4)
-	
+
 	-- Get visible enemies --
 	local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO, visible = true, alive = true, team = me:GetEnemyTeam(), illusion=false})
-	
+
 	for i,v in ipairs(enemies) do
 		local distance = GetDistance2D(v,me)
-		
+
 		-- Get a valid target in range --
 		if not target and distance < range then
 			target = v
 		end
-		
+
 		-- Get the closest / least health target --
 		if target then
 			if getLeastHP and distance < range then
@@ -102,7 +103,7 @@ function Tick(tick)
 			end
 		end
 	end
-	
+
 	-- Do the combo! --
 	if target and me.alive and not SleepCheck() then
 		if comboState == 0 then
@@ -136,23 +137,14 @@ function CastSpell(spell, victim, isQueued)
 	end
 end
 
-function Sleep(duration)
-	sleepTick = currentTick + duration
-end
- 
-function SleepCheck()
-	return sleepTick == nil or currentTick > sleepTick
-end
-
-function GameClose()
+function onClose()
 	collectgarbage("collect")
 	if registered then
-		script:UnregisterEvent(Tick)
+		script:UnregisterEvent(Main)
 		script:UnregisterEvent(Key)
-		script:RegisterEvent(EVENT_TICK,Load)
 		registered = false
 	end
 end
 
-script:RegisterEvent(EVENT_CLOSE,GameClose)
-script:RegisterEvent(EVENT_TICK,Load)
+script:RegisterEvent(EVENT_CLOSE,onClose)
+script:RegisterEvent(EVENT_TICK,onLoad)
