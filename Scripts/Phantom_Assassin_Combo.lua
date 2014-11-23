@@ -63,7 +63,7 @@ function Main(tick)
 	if not SleepCheck() then return end
 
 	local me = entityList:GetMyHero()
-	local myPlayer = entityList:GetMyPlayer()
+	local myPlayer = entityList:GetMyPlayer().selection[1]
 	if not (me and active) then return end
 
 	-- Get hero abilities --
