@@ -1,9 +1,10 @@
+--<<Epic Skyrath Mage Combo | Version: 1.2>>
 --[[
 	--------------------------------------
 	| Skywrath Combo Script by edwynxero |
 	--------------------------------------
 	============= Version 1.2 ============
-	 
+
 	Description:
 	------------
 		Skywrath Mage Ultimate Combo
@@ -37,22 +38,22 @@ local registered	 = false
 local range          = 900
 
 --CODE
-local sleepTick     = 0
-local currentTick   = 0
+local sleepMain     = 0
+local currentMain   = 0
 local target        = nil
 local active        = false
 
 --[[Loading Script...]]
-function Load()
+function onLoad()
 	if PlayingGame() then
 		local me = entityList:GetMyHero()
 		if not me or me.classId ~= CDOTA_Unit_Hero_Skywrath_Mage then
 			script:Disable()
 		else
 			registered = true
-			script:RegisterEvent(EVENT_TICK,Tick)
+			script:RegisterEvent(EVENT_TICK,Main)
 			script:RegisterEvent(EVENT_KEY,Key)
-			script:UnregisterEvent(Load)
+			script:UnregisterEvent(onLoad)
 		end
 	end
 end
@@ -65,30 +66,30 @@ function Key(msg,code)
 	end
 end
 
-function Tick(tick)
-	currentTick = tick
+function Main(tick)
+	currentMain = tick
 	if not SleepCheck() then return end Sleep(200)
-	
+
 	local me = entityList:GetMyHero()
 	if not (me and active) then return end
-	
+
 	-- Get hero abilities --
 	local ArcaneBolt     = me:GetAbility(1)
 	local ConcussiveShot = me:GetAbility(2)
 	local AncientSeal    = me:GetAbility(3)
 	local MysticFlare    = me:GetAbility(4)
-	
+
 	-- Get visible enemies --
 	local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO, visible = true, alive = true, team = me:GetEnemyTeam(), illusion=false})
-	
+
 	for i,v in ipairs(enemies) do
 		local distance = GetDistance2D(v,me)
-		
+
 		-- Get a valid target in range --
 		if not target and distance < range then
 			target = v
 		end
-		
+
 		-- Get the closest / least health target --
 		if target then
 			if getLeastHP and distance < range then
@@ -101,7 +102,7 @@ function Tick(tick)
 			end
 		end
 	end
-	
+
 	-- Do the combo! --
 	if target and me.alive then
 		CastSpell(ArcaneBolt, target)
@@ -111,7 +112,7 @@ function Tick(tick)
 			if me:FindItem("item_rod_of_atos") then
 				CastSpell(me:FindItem("item_rod_of_atos"), target)
 			end
-			CastSpell(MysticFlare, target.position, true) 
+			CastSpell(MysticFlare, target.position, true)
 		end
 		return
 	end
@@ -130,23 +131,14 @@ function CastSpell(spell,victim, isQueued)
 	end
 end
 
-function Sleep(duration)
-	sleepTick = currentTick + duration
-end
- 
-function SleepCheck()
-	return sleepTick == nil or currentTick > sleepTick
-end
-
-function GameClose()
+function onClose()
 	collectgarbage("collect")
 	if registered then
-		script:UnregisterEvent(Tick)
+		script:UnregisterEvent(Main)
 		script:UnregisterEvent(Key)
-		script:RegisterEvent(EVENT_TICK,Load)
 		registered = false
 	end
 end
 
-script:RegisterEvent(EVENT_CLOSE,GameClose)
-script:RegisterEvent(EVENT_TICK,Load)
+script:RegisterEvent(EVENT_CLOSE,onClose)
+script:RegisterEvent(EVENT_TICK,onLoad)
