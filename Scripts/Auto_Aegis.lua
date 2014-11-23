@@ -1,9 +1,10 @@
+--<<Automatic Steal/Deny Aegis (Reworked) | Version: 1.0>>
 --[[
 	---------------------------------------
 	| Automatic Aegis Script by edwynxero |
 	---------------------------------------
 	============= Version 1.0 =============
-	
+
 	Description:
 	------------
 		Heroes ToDo :
@@ -67,24 +68,24 @@ else
 	hotkeyText = ""..stealKey.." | "..denyKey
 end
 
-local F14        = drawMgr:CreateFont("F14","Tahoma",14*monitor,550*monitor) 
+local F14        = drawMgr:CreateFont("F14","Tahoma",14*monitor,550*monitor)
 local statusText = drawMgr:CreateText(10*monitor,590*monitor,-1,"( Key: " .. hotkeyText .. " ) Steal | Deny Aegis: OFF | OFF",F14)
 local aegisLoc   = Vector(4164,-1831,0)
 local spellLoc   = Vector(4077,-2143,0)
 local aegisDeny  = nil
 
 --[[Loading Script...]]
-function Load()
+function onLoad()
 	if PlayingGame() then
 		local me = entityList:GetMyHero()
 		if not me then
 			script:Disable()
 		else
 			registered = true
-			script:RegisterEvent(EVENT_TICK,Tick)
+			script:RegisterEvent(EVENT_TICK,Main)
 			script:RegisterEvent(EVENT_KEY,Key)
 			script:RegisterEvent(EVENT_DOTA,Roshan)
-			script:UnregisterEvent(Load)
+			script:UnregisterEvent(onLoad)
 		end
 	end
 end
@@ -117,19 +118,19 @@ function Key(msg,code)
 	end
 end
 
-function Tick(tick)
+function Main(tick)
 	if not SleepCheck() then return end Sleep(200)
-	
+
 	local me = entityList:GetMyHero()
 	if not me and not (stealActive or denyActive) then return end
-	
+
 	local myID = me.classId
 	local blinkDagger = me:FindItem("item_blink")
-	
+
 	if blinkDagger or myID == CDOTA_Unit_Hero_EmberSpirit or myID == CDOTA_Unit_Hero_AntiMage or myID == CDOTA_Unit_Hero_Rattletrap or myID == CDOTA_Unit_Hero_FacelessVoid or myID == CDOTA_Unit_Hero_Magnataur or myID == CDOTA_Unit_Hero_SandKing or myID == CDOTA_Unit_Hero_QueenOfPain or myID == CDOTA_Unit_Hero_Morphling or myID == CDOTA_Unit_Hero_Naga_Siren or myID == CDOTA_Unit_Hero_StormSpirit or myID == CDOTA_Unit_Hero_Sniper or myID == CDOTA_Unit_Hero_Venomancer then
 		statusText.visible = true
 	end
-	
+
 	if me.alive and not me:IsChanneling() then
 		local items = entityList:GetEntities({type=LuaEntity.TYPE_ITEM_PHYSICAL})
 		for i,v in ipairs(items) do
@@ -150,31 +151,31 @@ function Roshan (kill)
 		local me          = entityList:GetMyHero()
 		local myID        = me.classId
 		local blinkDagger = me:FindItem("item_blink")
-		
+
 		if kill.name == "dota_roshan_kill" and stealActive then
 			if GetDistance2D(aegisLoc,me) <= 1200 and blinkDagger then
 				CastSpell(blinkDagger,aegisLoc)
-				
+
 			elseif myID == CDOTA_Unit_Hero_EmberSpirit and GetDistance2D(spellLoc,me) <= 700 then
 				local Slight_of_Fist = me:GetAbility(2)
 				CastSpell(Slight_of_Fist,spellLoc)
-				
+
 			elseif myID == CDOTA_Unit_Hero_AntiMage and GetDistance2D(aegisLoc,me) <= 1150 then
 				local AM_Blink = me:GetAbility(2)
 				CastSpell(AM_Blink,aegisLoc)
-				
+
 			elseif myID == CDOTA_Unit_Hero_Rattletrap and GetDistance2D(aegisLoc,me) <= 2000 then
 				local Hookshot = me:GetAbility(4)
 				CastSpell(Hookshot,aegisLoc)
-				
+
 			elseif myID == CDOTA_Unit_Hero_FacelessVoid and GetDistance2D(aegisLoc,me) <= 1300 then
 				local TimeWalk = me:GetAbility(1)
 				CastSpell(TimeWalk,aegisLoc)
-				
+
 			elseif myID == CDOTA_Unit_Hero_Magnataur and GetDistance2D(aegisLoc,me) <= 1200 then
 				local Skewer = me:GetAbility(3)
 				CastSpell(Skewer,aegisLoc)
-				
+
 			elseif myID == CDOTA_Unit_Hero_SandKing and GetDistance2D(aegisLoc,me) <= 650 or (blinkDagger and GetDistance2D(aegisLoc,me) <= 1850) then
 				local Burrowstrike = me:GetAbility(1)
 				if blinkDagger then
@@ -183,19 +184,19 @@ function Roshan (kill)
 				else
 					CastSpell(Burrowstrike,aegisLoc)
 				end
-				
+
 			elseif myID == CDOTA_Unit_Hero_QueenOfPain and GetDistance2D(aegisLoc,me) <= 1150 then
 				local QOP_Blink = me:GetAbility(2)
 				CastSpell(QOP_Blink,aegisLoc)
-				
+
 			elseif myID == CDOTA_Unit_Hero_Morphling and GetDistance2D(aegisLoc,me) <= 1000 then
 				local Waveform = me:GetAbility(1)
 				CastSpell(Waveform,aegisLoc)
-				
+
 			elseif myID == CDOTA_Unit_Hero_Naga_Siren and GetDistance2D(aegisLoc,me) <= 1250 then
 				local Song_of_the_siren = me:GetAbility(4)
 				CastSpell(Song_of_the_siren,aegisLoc)
-				
+
 			elseif myID == CDOTA_Unit_Hero_StormSpirit and GetDistance2D(aegisLoc,me) <= 1000 then
 				local Ball_Lightning = me:GetAbility(4)
 				CastSpell(Ball_Lightning,aegisLoc)
@@ -214,7 +215,7 @@ function Roshan (kill)
 				if GetDistance2D(aegisLoc,me) <= me.attackRange + bonusrange then
 					aegisDeny = me
 				end
-				
+
 			elseif myID == CDOTA_Unit_Hero_Venomancer and GetDistance2D(aegisLoc,me) <= 950 then
 				local PlagueWard = me:GetAbility(3)
 				local ward = entityList:GetEntities({classId=CDOTA_BaseNPC_Venomancer_PlagueWard,alive = true,visible = true,controllable=true})
@@ -233,16 +234,16 @@ function CastSpell(spell,victim)
 	end
 end
 
-function GameClose()
+function onClose()
 	collectgarbage("collect")
 	if registered then
 		script:UnregisterEvent(Roshan)
 		script:UnregisterEvent(Key)
-		script:UnregisterEvent(Tick)
+		script:UnregisterEvent(Main)
 		statusText.visible = false
 		registered = false
 	end
 end
 
-script:RegisterEvent(EVENT_CLOSE,GameClose)
-script:RegisterEvent(EVENT_TICK,Load)
+script:RegisterEvent(EVENT_CLOSE,onClose)
+script:RegisterEvent(EVENT_TICK,onLoad)
