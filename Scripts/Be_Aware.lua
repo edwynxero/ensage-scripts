@@ -1,3 +1,4 @@
+--<<Messages if gank chances | Version: 1.0>>
 --[[
 	------------------------------------------
 	| Be Aware of Skills Script by edwynxero |
@@ -11,7 +12,6 @@
 		Currently Includes:
 			- Mirana's Moonlight Shadow
 			- Spirit Breaker's Charge
-			- Techies Mines Info
 
 		To-Do:
 			- Much More....
@@ -27,12 +27,10 @@ require("libs.ScriptConfig")
 config = ScriptConfig.new()
 config:SetParameter("detectMirana", true)
 config:SetParameter("detectSpiritCharge", true)
-config:SetParameter("detectTechiesMines", true)
 config:Load()
 
 --SETTINGS
 local detect_Mirana        = config.detectMirana
-local detect_TechiesMines  = config.detectTechiesMines
 local detect_Spirit_Charge = config.detectSpiritCharge
 
 --CODE
@@ -46,30 +44,21 @@ local registered = nil
 	local mode_mirana      = false
 	local isMiranaUltimate = false
 
---[[                Techies             ]]
-	local MS        = {}
-	local TS        = {}
-	local table     = {}
-	local MinesInfo = {}
-	MinesInfo["npc_dota_techies_land_mine"]   = 150
-	MinesInfo["npc_dota_techies_stasis_trap"] = 450
-	MinesInfo["npc_dota_techies_remote_mine"] = 425
-
 --[[Loading Script...]]
-function Load()
+function onLoad()
 	if PlayingGame() then
 		local me = entityList:GetMyHero()
 		if not me then
 			script:Disable()
 		else
 			registered = true
-			script:RegisterEvent(EVENT_TICK,Tick)
-			script:UnregisterEvent(Load)
+			script:RegisterEvent(EVENT_TICK,Main)
+			script:UnregisterEvent(onLoad)
 		end
 	end
 end
 
-function Tick(tick)
+function Main(tick)
 	if not SleepCheck() then return end
 	local me = entityList:GetMyHero() if not me then return end
 
@@ -81,7 +70,6 @@ function Tick(tick)
 	for i,v in ipairs(enemies) do
 		if v.classId == CDOTA_Unit_Hero_Mirana and detect_Mirana then checkMirana(enemies) end
 		if v.classId == CDOTA_Unit_Hero_SpiritBreaker and detect_Spirit_Charge then checkCharge(teamies) end
-		if v.classId == CDOTA_Unit_Hero_Techies and detect_TechiesMines then checkMines(me.team) end
 	end
 end
 
@@ -127,47 +115,6 @@ function checkMirana(players)
 	end
 end
 
-function checkMines(team)
-	if SleepCheck("min") then
-		local mines = entityList:GetEntities({classId=CDOTA_NPC_TechiesMines})
-		local clear = false
-
-		for i,v in ipairs(mines) do
-			if v.team ~= team then
-				if not MS[v.handle] and v.alive then
-					MS[v.handle] = {}
-					MS[v.handle].map = drawMgr:CreateRect(0,0,35,35,0x000000FF,drawMgr:GetTextureId("NyanUI/other/"..v.name))
-					MS[v.handle].map.entity = v MS[v.handle].map.entityPosition = Vector(0,0,v.healthbarOffset)
-					MS[v.handle].eff = Effect(v.position,"range_display")
-					MS[v.handle].eff:SetVector(1, Vector(MinesInfo[v.name],0,0))
-					MS[v.handle].eff:SetVector(0, v.position)
-					local minimap = MapToMinimap(v.position.x,v.position.y)
-					MS[v.handle].minmap = drawMgr:CreateRect(minimap.x-10,minimap.y-10,18,18,0x000000FF,drawMgr:GetTextureId("NyanUI/other/"..v.name))
-					table.insert(table,v.handle)
-				elseif MS[v.handle] and not v.alive then
-					clear = true
-					MS[v.handle] = nil
-				end
-			end
-		end
-
-		for i,v in ipairs(table) do
-			if MS[v] then
-				local st = entityList:GetEntity(v)
-				if not st or not st.alive then
-					MS[v] = nil
-					table.remove(table, i)
-					clear = true
-				end
-			end
-		end
-		if clear then
-			collectgarbage("collect")
-		end
-		Sleep(250,"min")
-	end
-end
-
 function GenerateSideMessage(heroName,spellName)
 	local test = sideMessage:CreateMessage(200,60)
 	test:AddElement(drawMgr:CreateRect(10,10,72,40,0xFFFFFFFF,drawMgr:GetTextureId("NyanUI/heroes_horizontal/"..heroName)))
@@ -175,19 +122,13 @@ function GenerateSideMessage(heroName,spellName)
 	test:AddElement(drawMgr:CreateRect(150,11,40,40,0xFFFFFFFF,drawMgr:GetTextureId("NyanUI/spellicons/"..spellName)))
 end
 
-function GameClose()
+function onClose()
 	collectgarbage("collect")
 	if registered then
-		script:UnregisterEvent(Tick)
-
-		------------Techies-------------
-		MS   = {}	TS        = {}
-		table = {}	MinesInfo = {}
-		--------------------------------
-
+		script:UnregisterEvent(Main)
 		registered = false
 	end
 end
 
-script:RegisterEvent(EVENT_TICK,Load)
-script:RegisterEvent(EVENT_CLOSE,GameClose)
+script:RegisterEvent(EVENT_CLOSE,onClose)
+script:RegisterEvent(EVENT_TICK,onLoad)
