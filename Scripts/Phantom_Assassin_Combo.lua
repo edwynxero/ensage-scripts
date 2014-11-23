@@ -1,3 +1,4 @@
+--<<Epic Phantom Assassin Combo | Version: 1.2>>
 --[[
 	----------------------------------------------
 	| Phantom Assassin Combo Script by edwynxero |
@@ -36,16 +37,16 @@ local target	    = nil
 local active	    = false
 
 --[[Loading Script...]]
-function Load()
+function onLoad()
 	if PlayingGame() then
 		local me = entityList:GetMyHero()
 		if not me or me.classId ~= CDOTA_Unit_Hero_PhantomAssassin then
 			script:Disable()
 		else
 			registered = true
-			script:RegisterEvent(EVENT_TICK,Tick)
+			script:RegisterEvent(EVENT_TICK,Main)
 			script:RegisterEvent(EVENT_KEY,Key)
-			script:UnregisterEvent(Load)
+			script:UnregisterEvent(onLoad)
 		end
 	end
 end
@@ -58,7 +59,7 @@ function Key(msg,code)
 	end
 end
 
-function Tick(tick)
+function Main(tick)
 	if not SleepCheck() then return end
 
 	local me = entityList:GetMyHero()
@@ -114,15 +115,14 @@ function CastSpell(spell,victim)
 	end
 end
 
-function GameClose()
+function onClose()
 	collectgarbage("collect")
 	if registered then
-		script:UnregisterEvent(Tick)
+		script:UnregisterEvent(Main)
 		script:UnregisterEvent(Key)
-		script:RegisterEvent(EVENT_TICK,Load)
 		registered = false
 	end
 end
 
-script:RegisterEvent(EVENT_CLOSE,GameClose)
-script:RegisterEvent(EVENT_TICK,Load)
+script:RegisterEvent(EVENT_CLOSE,onClose)
+script:RegisterEvent(EVENT_TICK,onLoad)
