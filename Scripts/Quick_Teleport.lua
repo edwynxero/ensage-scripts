@@ -1,13 +1,14 @@
+--<<Quick Teleport to Base | Version: 1.0>>
 --[[
 	--------------------------------------
 	| Quick Teleport Script by edwynxero |
 	--------------------------------------
 	============= Version 1.0 ============
-	
+
 	Description:
 	------------
 		Teleports your hero to base when pressed
-		
+
 		Note: Be sure that you don't bind a key you generally will use for something else.
 ]]--
 
@@ -28,23 +29,23 @@ local baseLoc        = nil
 local teleportActive = false
 
 --[[Loading Script...]]
-function Load()
+function onLoad()
 	if PlayingGame() then
 		local me = entityList:GetMyHero()
 		if not me then
 			script:Disable()
 		else
 			registered = true
-			
+
 			if me.team == LuaEntity.TEAM_RADIANT then
 				baseLoc = Vector(-7188,-6708,398)
 			else
 				baseLoc = Vector(7033,6418,391)
 			end
-			
-			script:RegisterEvent(EVENT_TICK,Tick)
+
+			script:RegisterEvent(EVENT_TICK,Main)
 			script:RegisterEvent(EVENT_KEY,Key)
-			script:UnregisterEvent(Load)
+			script:UnregisterEvent(onLoad)
 		end
 	end
 end
@@ -57,16 +58,22 @@ function Key(msg,code)
 	end
 end
 
-function Tick(tick)
+function Main(tick)
 	if not SleepCheck() then return end Sleep(200)
-	
+
 	local me = entityList:GetMyHero()
 	if not (me and teleportActive) then return end
-	
-	local teleportScroll = me:FindItem("item_tpscroll")
-	
-	if me.alive and not me:IsChanneling() and teleportScroll then
-		CastItem(teleportScroll,baseLoc)
+
+	local teleport_scroll = me:FindItem("item_tpscroll")
+	local boots_of_travel = me:FindItem("item_travel_boots")
+
+	if me.alive and not me:IsChanneling() then
+		if teleport_scroll then
+			CastItem(teleport_scroll,baseLoc)
+		elseif boots_of_travel then
+			CastItem(boots_of_travel,baseLoc)
+		end
+		return
 	end
 end
 
@@ -76,14 +83,14 @@ function CastItem(item,position)
 	end
 end
 
-function GameClose()
+function onClose()
 	collectgarbage("collect")
 	if registered then
 		script:UnregisterEvent(Key)
-		script:UnregisterEvent(Tick)
+		script:UnregisterEvent(Main)
 		registered = false
 	end
 end
 
-script:RegisterEvent(EVENT_CLOSE,GameClose)
-script:RegisterEvent(EVENT_TICK,Load)
+script:RegisterEvent(EVENT_CLOSE,onClose)
+script:RegisterEvent(EVENT_TICK,onLoad)
