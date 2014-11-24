@@ -27,7 +27,7 @@ config = ScriptConfig.new()
 config:SetParameter("Hotkey", "F", config.TYPE_HOTKEY)
 config:SetParameter("HookshotKey", "D", config.TYPE_HOTKEY)
 config:SetParameter("StopKey", "S", config.TYPE_HOTKEY)
-config:SetParameter("HookshotTolerancy", 0)
+config:SetParameter("HookshotTolerancy", 150)
 config:Load()
 
 --SETTINGS
@@ -195,25 +195,24 @@ function doCombo(tick)
     local Power_Cogs      = me:GetAbility(2)
     local Blade_Mail      = me:FindItem("item_blade_mail")
 
-    if not target or (not target.alive or target:IsUnitState(LuaEntityNPC.STATE_MAGIC_IMMUNE) or (not hooked) or target:IsIllusion()) or not me.alive or not active then
+    if not target or not (GetDistance2D(target,me) < 200) or (not target.alive or target:IsUnitState(LuaEntityNPC.STATE_MAGIC_IMMUNE) or (not hooked) or target:IsIllusion()) or not me.alive or not active then
         targetHandle = nil
         script:UnregisterEvent(Combo)
         return
     end
-
     CastSpell(Power_Cogs)
     CastSpell(Battery_Assault)
     if Blade_Mail then
         CastSpell(Blade_Mail)
     end
-    me:Attack(target)
 end
 
 function ModifierAdd(v,modifier)
     if not PlayingGame() or client.console then return end
     local me = entityList:GetMyHero()
     if active and modifier.name == "modifier_stunned" then
-        if v.hero and v.team == me:GetEnemyTeam() and not v:IsIllusion() and GetDistance2D(v,me) < 500 and isHookshot() then
+        print(v.name)
+        if v.hero and v.team == me:GetEnemyTeam() and not v:IsIllusion() and isHookshot() then
             targetHandle = v.handle
             hooked = true
             script:RegisterEvent(EVENT_TICK,doCombo)
@@ -225,16 +224,20 @@ function isHookshot()
     local me       = entityList:GetMyHero()
     local Hookshot = me:GetAbility(4)
     local aghanims = me:FindItem("item_ultimate_scepter")
-    if aghanims then
-        if Hookshot.cd > 12 then
-            return false
-        elseif Hookshot.cd < 12 then
-            return true
-        end
-    elseif Hookshot.cd < hookshotCD[Hookshot.level] and Hookshot.cd > hookshotCD[Hookshot.level]-5 then
-        return true
-    else
+    if Hookshot:CanBeCasted() then
         return false
+    else
+        if aghanims then
+            if Hookshot.cd > 12 then
+                return false
+            elseif Hookshot.cd < 12 then
+                return true
+            end
+        elseif Hookshot.cd < hookshotCD[Hookshot.level] and Hookshot.cd > hookshotCD[Hookshot.level]-5 then
+            return true
+        else
+            return false
+        end
     end
 end
 
@@ -261,6 +264,7 @@ function onClose()
         victim       = nil
         blindxyz     = nil
         targetHandle = nil
+        hooked       = false
         registered   = false
         statusText.visible = false
         script:UnregisterEvent(Main)
