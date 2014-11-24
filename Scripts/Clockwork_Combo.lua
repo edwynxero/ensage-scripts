@@ -215,8 +215,8 @@ function ModifierAdd(v,modifier)
     if active and modifier.name == "modifier_stunned" then
         if v.hero and v.team == me:GetEnemyTeam() and not v:IsIllusion() and GetDistance2D(v,me) < 500 and isHookshot() then
             targetHandle = v.handle
-            script:RegisterEvent(EVENT_TICK,doCombo)
             hooked = true
+            script:RegisterEvent(EVENT_TICK,doCombo)
         end
     end
 end
