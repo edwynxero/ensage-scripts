@@ -213,7 +213,7 @@ function ModifierAdd(v,modifier)
     if not PlayingGame() or client.console then return end
     local me = entityList:GetMyHero()
     if active and modifier.name == "modifier_stunned" then
-        if v.hero and v.team == me:GetEnemyTeam() and not v:IsIllusion() and GetDistance2D(v,me) < 5000 and isHookshot() then
+        if v.hero and v.team == me:GetEnemyTeam() and not v:IsIllusion() and GetDistance2D(v,me) < 500 and isHookshot() then
             targetHandle = v.handle
             script:RegisterEvent(EVENT_TICK,doCombo)
             hooked = true
