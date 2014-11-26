@@ -3,7 +3,7 @@
 	------------------------------------------------
 	| Venomancer Wards Control Script by edwynxero |
 	------------------------------------------------
-	================== Version 1.0 =================
+	================== Version 1.1 =================
 
 	Description:
 	------------
@@ -80,24 +80,27 @@ function Main(tick)
 	end
 
 	for i,v in ipairs(creeps) do
-		local offset = v.healthbarOffset
-		if offset == -1 then return end
-		if v.visible and v.alive then
-			if v.team ~= me.team and wardLastHit and v.health > 0 and v.health < (damage[abilityName.level]*(1-v.dmgResist)+20) then
-				for l,k in ipairs(ward) do
-					if GetDistance2D(v,k) < k.attackRange and SleepCheck(k.handle) then
-						k:Attack(v)
-						Sleep(500,k.handle)
-						break
+		local OnScreen = client:ScreenPosition(v.position)
+		if OnScreen then
+			local offset = v.healthbarOffset
+			if offset == -1 then return end
+			if v.visible and v.alive then
+				if v.team ~= me.team and wardLastHit and v.health > 0 and v.health < (damage[abilityName.level]*(1-v.dmgResist)+20) then
+					for l,k in ipairs(ward) do
+						if GetDistance2D(v,k) < k.attackRange and SleepCheck(k.handle) then
+							k:Attack(v)
+							Sleep(500,k.handle)
+							break
+						end
 					end
-				end
 
-			elseif v.team == me.team and wardDeny and v.health > (damage[abilityName.level]*(1-v.dmgResist)) and v.health < (damage[abilityName.level]*(1-v.dmgResist))+88 then
-				for l,k in ipairs(ward) do
-					if GetDistance2D(v,k) < k.attackRange and SleepCheck(k.handle) then
-						k:Attack(v)
-						Sleep(500,k.handle)
-						break
+				elseif v.team == me.team and wardDeny and v.health > (damage[abilityName.level]*(1-v.dmgResist)) and v.health < (damage[abilityName.level]*(1-v.dmgResist))+88 then
+					for l,k in ipairs(ward) do
+						if GetDistance2D(v,k) < k.attackRange and SleepCheck(k.handle) then
+							k:Attack(v)
+							Sleep(500,k.handle)
+							break
+						end
 					end
 				end
 			end
