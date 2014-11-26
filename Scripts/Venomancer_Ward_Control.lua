@@ -72,7 +72,7 @@ function Main(tick)
 			for l,k in ipairs(ward) do
 				if GetDistance2D(v,k) < k.attackRange and SleepCheck(k.handle) then
 					k:Attack(v)
-					Sleep(500,k.handle)
+					Sleep(1000,k.handle)
 					break
 				end
 			end
@@ -89,7 +89,7 @@ function Main(tick)
 					for l,k in ipairs(ward) do
 						if GetDistance2D(v,k) < k.attackRange and SleepCheck(k.handle) then
 							k:Attack(v)
-							Sleep(500,k.handle)
+							Sleep(1000,k.handle)
 							break
 						end
 					end
@@ -98,7 +98,7 @@ function Main(tick)
 					for l,k in ipairs(ward) do
 						if GetDistance2D(v,k) < k.attackRange and SleepCheck(k.handle) then
 							k:Attack(v)
-							Sleep(500,k.handle)
+							Sleep(1000,k.handle)
 							break
 						end
 					end
