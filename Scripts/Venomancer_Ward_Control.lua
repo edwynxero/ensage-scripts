@@ -1,4 +1,4 @@
---<<(Deny / Last Hit) Creeps, debuffs enemy with Plague Ward(s) | Version: 1.0>>
+--<<(Deny / Last Hit) Creeps, debuffs enemy with Plague Ward(s) | Version: 1.1>>
 --[[
 	------------------------------------------------
 	| Venomancer Wards Control Script by edwynxero |
