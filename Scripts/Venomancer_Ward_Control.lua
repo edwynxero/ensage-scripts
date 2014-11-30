@@ -46,7 +46,7 @@ function onLoad()
 		else
 			registered = true
 			script:RegisterEvent(EVENT_TICK,Main)
-			script:UnregisterEvent(Load)
+			script:UnregisterEvent(onLoad)
 		end
 	end
 end
