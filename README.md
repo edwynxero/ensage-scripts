@@ -20,7 +20,7 @@
 <td align="left">Item Notification (New)</td>
 </tr>
 <tr>
-<td align="left">Skyrath Mage - First 3 Skills Combo</td>
+<td align="left">Skyrath Mage - epic Combo</td>
 <td align="left">Quick Teleport</td>
 </tr>
 <tr>
