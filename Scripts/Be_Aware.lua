@@ -1,42 +1,46 @@
---<<Messages if gank chances | Version: 1.1>>
+--<<Reports gank chances | Version: 1.1>>
 --[[
 	------------------------------------------
-	| Be Aware of Skills Script by edwynxero |
-	------------------------------------------
-	=============== Version 1.1 ==============
+	→ Script : Be Aware
+	→ Version: 1.1
+	→ Made By: edwynxero
+	-------------------------------------------
 
 	Description:
 	------------
 		Shows warning for different skills!
 
-		Currently Includes:
-			- Mirana's Moonlight Shadow
+		Includes:
+			» Mirana's Moonlight Shadow
 
-		To-Do:
-			- Much More....
-
-		*NOTE: You won't be warned if skill casted in fog of war!
+	Change log:
+	-----------
+		» Version 1.1 : 
+		» Version 1.0 : Initial release
 ]]--
 
---LIBRARIES
+--→ LIBRARIES
 require("libs.Utils")
 require("libs.ScriptConfig")
 
---CONFIG
+--→ CONFIG
 config = ScriptConfig.new()
 config:SetParameter("detectMirana", true)
 config:Load()
 
---SETTINGS
+--→ SETTINGS
 local detect_Mirana = config.detectMirana
 
---CODE
+--→ CODE
 local registered = nil
 
---[[                Mirana              ]]
-	local isMoonlightCasted = false
+--→ CODE » Mirana
+local isMoonlightCasted = false
 
---[[Loading Script...]]
+--→ CODE » Oracle
+local isFortunesEnd     = false
+
+--→ Load Script
 function onLoad()
 	if PlayingGame() then
 		local me = entityList:GetMyHero()
@@ -55,13 +59,14 @@ function Main(tick)
 	local me = entityList:GetMyHero() if not me then return end
 	local team = me.team
 
-	-- Get visible cast & heroes --
+	--→ get visible cast & heroes
 	local cast    = entityList:GetEntities({classId=CDOTA_BaseNPC})
 	local heroes  = entityList:GetEntities({type=LuaEntity.TYPE_HERO})
 
 	for i,v in ipairs(heroes) do
 		if v.team ~= team and not v:IsIllusion() then
-			if v.classId == CDOTA_Unit_Hero_Mirana then MoonlightShadow(heroes, team) end
+			if v.classId == CDOTA_Unit_Hero_Mirana then MoonlightShadow(heroes, team) Sleep(1000) end
+			if v.classId == CDOTA_Unit_Hero_Oracle then FortunesEnd(cast, heroes, team) Sleep(1000) end
 		end
 	end
 end
@@ -80,6 +85,14 @@ function MoonlightShadow(heroes, team)
 	end
 	if target then
 		GenerateSideMessage("mirana","mirana_invis")
+	end
+end
+
+function FortunesEnd(cast, heroes, team)
+	for i,v in ipairs(cast) do
+		if v.team ~= team and v.dayVision == 215 and v.unitState == 29901056 then
+			GenerateSideMessage("oracle","oracle_fortunes_end")
+		end
 	end
 end
 
