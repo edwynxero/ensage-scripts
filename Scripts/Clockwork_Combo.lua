@@ -1,9 +1,10 @@
 --<<Beautiful: Clockwork Combo | Version: 1.0>>
 --[[
-    ---------------------------------------
-    | Clockwork Combo Script by edwynxero |
-    ---------------------------------------
-    ============= Version 1.0 =============
+    ------------------------------------------
+    → Script : Clockwork Combo
+    → Version: 1.0
+    → Made By: edwynxero
+    -------------------------------------------
 
     Description:
     ------------
@@ -15,14 +16,18 @@
         To-do:
             - If enemy can escape check.
             - If enemy use cyclone after being hooked, Clockwork will automaticly do the combo after landing.
+
+    Change log:
+    -----------
+        » Version 1.0 : Initial Release
 ]]--
 
---LIBRARIES
+--→ LIBRARIES
 require("libs.ScriptConfig")
 require("libs.TargetFind")
 require("libs.SkillShot")
 
---CONFIG
+--→ CONFIG
 config = ScriptConfig.new()
 config:SetParameter("Hotkey", "F", config.TYPE_HOTKEY)
 config:SetParameter("HookshotKey", "D", config.TYPE_HOTKEY)
@@ -30,7 +35,7 @@ config:SetParameter("StopKey", "S", config.TYPE_HOTKEY)
 config:SetParameter("HookshotTolerancy", 150)
 config:Load()
 
---SETTINGS
+--→ SETTINGS
 local togglekey   = config.Hotkey
 local hookshotKey = config.HookshotKey
 local active      = true
@@ -38,7 +43,7 @@ local registered  = false
 local myFont      = drawMgr:CreateFont("Clockwork","Tahoma",14,550)
 local statusText  = drawMgr:CreateText(-40,-20,-1,"Hookshot'em!",myFont);
 
---CODE
+--→ CODE
 local xyz            = nil
 local victim         = nil
 local blindxyz       = nil
@@ -49,7 +54,7 @@ local hookshotDamage = {100,200,300}
 local hookshotRange  = {2000,2500,3000}
 local hookshotSpeed  = {4000,5000,6000}
 
---[[Loading Script...]]
+--→ Load Script
 function onLoad()
     if PlayingGame() then
         local me = entityList:GetMyHero()
@@ -67,6 +72,7 @@ function onLoad()
     end
 end
 
+--→ check if "combo key" is pressed.
 function Key(msg,code)
     if client.chat or not PlayingGame() then return end
     if msg == KEY_UP then
@@ -94,12 +100,12 @@ function Main(tick)
     local me = entityList:GetMyHero()
     if not me then return end Sleep(125)
 
-    local offset = me.healthbarOffset
-    statusText.entity = me
+    local offset              = me.healthbarOffset
+    statusText.entity         = me
     statusText.entityPosition = Vector(-2,-5,offset)
 
-    -- Get hero abilities --
-    local Hookshot        = me:GetAbility(4)
+    --→ Get hero abilities 
+    local Hookshot = me:GetAbility(4)
 
     if active then
         if Hookshot.level > 0 and math.ceil(Hookshot.cd) == math.ceil(Hookshot:GetCooldown(Hookshot.level)) then
@@ -190,7 +196,7 @@ function doCombo(tick)
     local me = entityList:GetMyHero()
 
     local target = entityList:GetEntity(targetHandle)
-    -- Get Abilities --
+    --→ Get Abilities
     local Battery_Assault = me:GetAbility(1)
     local Power_Cogs      = me:GetAbility(2)
     local Blade_Mail      = me:FindItem("item_blade_mail")
@@ -210,7 +216,7 @@ end
 function ModifierAdd(v,modifier)
     if not PlayingGame() or client.console then return end
     local me = entityList:GetMyHero()
-    if active and modifier.name == "modifier_stunned" then
+    if active and (modifier.name == "modifier_stunned" or modifier.name == "modifier_stun") then
         print(v.name)
         if v.hero and v.team == me:GetEnemyTeam() and not v:IsIllusion() and isHookshot() then
             targetHandle = v.handle
@@ -233,7 +239,7 @@ function isHookshot()
             elseif Hookshot.cd < 12 then
                 return true
             end
-        elseif Hookshot.cd < hookshotCD[Hookshot.level] and Hookshot.cd > hookshotCD[Hookshot.level]-5 then
+        elseif Hookshot.cd < hookshotCD[Hookshot.level] and Hookshot.cd > (hookshotCD[Hookshot.level]-5) then
             return true
         else
             return false
@@ -244,7 +250,7 @@ end
 function ModifierRemove(v,modifier)
     if not PlayingGame() or client.console then return end
     local me = entityList:GetMyHero()
-    if active and modifier.name == "modifier_stunned" and v.team == me:GetEnemyTeam() then
+    if active and (modifier.name == "modifier_stunned" or modifier.name == "modifier_stun") and v.team == me:GetEnemyTeam() then
         hooked = false
     end
 end
