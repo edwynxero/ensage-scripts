@@ -15,6 +15,11 @@
 		Features
 			» Excludes Illusions
 			» Enable / Disable feature for all procs
+
+	Change log:
+	-----------
+		» Version 1.1
+		» Version 1.0 : Initial Release
 ]]--
 
 --→ LIBRARIES
