@@ -1,47 +1,52 @@
 --<<Epic Ancient Apparition Combo | Version: 1.0>>
 --[[
-	------------------------------------------------
-	| Ancient Apparition Combo Script by edwynxero |
-	------------------------------------------------
-	================== Version 1.0 =================
+	------------------------------------------
+	→ Script : Ancient Apparition Combo Script
+	→ Version: 1.0
+	→ Made By: edwynxero
+	-------------------------------------------
 
 	Description:
 	------------
-		Ancient Apparition Ultimate Combo
-			- Cold Feet
-			- Cyclone (Eul Scepter)
-			- Ice Vortex
-			- Chilling Touch
-			- Ice Blast
+		Performs Ancient Apparition Ultimate Combo in following steps:
+			» Cold Feet
+			» Cyclone (Eul Scepter) - if available
+			» Ice Vortex
+			» Chilling Touch
+			» Ice Blast
 		Features
-			- Excludes Illusions
-			- One Key Combo Toggle
+			» Excludes Illusions
+			» One Key Combo Toggle
+
+	Change log:
+	-----------
+		» Version 1.0 : Initial release
 ]]--
 
---LIBRARIES
+--→ LIBRARIES
 require("libs.ScriptConfig")
 require("libs.TargetFind")
 
---CONFIG
+--→ CONFIG
 config = ScriptConfig.new()
 config:SetParameter("ComboKey", "D", config.TYPE_HOTKEY)
 config:SetParameter("TargetLeastHP", false)
 config:Load()
 
---SETTINGS
+--→ SETTINGS
 local comboKey       = config.ComboKey
 local getLeastHP     = config.TargetLeastHP
 local registered     = false
 local range          = 650
 
---CODE
+--→ CODE
 local sleepTick   = 0
 local currentTick = 0
 local comboState  = 0
 local target      = nil
 local active      = false
 
---[[Loading Script...]]
+--→ Load Script!
 function onLoad()
 	if PlayingGame() then
 		local me = entityList:GetMyHero()
@@ -56,7 +61,7 @@ function onLoad()
 	end
 end
 
---check if comboKey is pressed
+--→ check if comboKey is pressed
 function Key(msg,code)
 	if client.chat or client.console or client.loading then return end
 	if IsKeyDown(comboKey) then
@@ -74,24 +79,24 @@ function Main(tick)
 	local me = entityList:GetMyHero()
 	if not (me and active) then return end
 
-	-- Get hero abilities --
+	--→ get hero abilities
 	local ColdFeet      = me:GetAbility(1)
 	local IceVortex     = me:GetAbility(2)
 	local ChillingTouch = me:GetAbility(3)
 	local IceBlast      = me:GetAbility(4)
 
-	-- Get visible enemies --
+	--→ get visible enemies
 	local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO, visible = true, alive = true, team = me:GetEnemyTeam(), illusion=false})
 
 	for i,v in ipairs(enemies) do
 		local distance = GetDistance2D(v,me)
 
-		-- Get a valid target in range --
+		--→ get a valid target in range
 		if not target and distance < range then
 			target = v
 		end
 
-		-- Get the closest / least health target --
+		--→ get the closest / least health target
 		if target then
 			if getLeastHP and distance < range then
 				target = targetFind:GetLowestEHP(range,"magic")
@@ -104,7 +109,7 @@ function Main(tick)
 		end
 	end
 
-	-- Do the combo! --
+	--→ perform the combo!
 	if target and me.alive and not SleepCheck() then
 		if comboState == 0 then
 			CastSpell(ColdFeet,target)
