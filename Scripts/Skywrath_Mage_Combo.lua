@@ -18,6 +18,12 @@
 			» Excludes Illusions
 			» One Key Combo Toggle
 		*Has enabling function for using ultimate in combo, but currently works perfectly only on static heroes (i.e. stunned)
+
+	Change log:
+	-----------
+		» Version 1.2
+		» Version 1.1
+		» Version 1.0 : Initial Release
 ]]--
 
 --→ LIBRARIES
