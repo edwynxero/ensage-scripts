@@ -15,6 +15,12 @@
 		Features
 			» Excludes Illusions
 			» One Key Combo Initiator (keep key pressed to continue combo)
+
+	Change log:
+	-----------
+		» Version 1.2
+		» Version 1.1
+		» Version 1.0 : Initial Release
 ]]--
 
 --→ LIBRARIES
