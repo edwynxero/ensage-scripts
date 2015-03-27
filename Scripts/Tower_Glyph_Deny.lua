@@ -1,31 +1,36 @@
 --<<Uses Glyph and Deny Tower(s) | Version: 1.0>>
 --[[
-	---------------------------------------
-	| Auto Tower Deny Script by edwynxero |
-	---------------------------------------
-	============= Version 1.0 =============
+	--------------------------------------------
+	→ Script : Automatic Tower Denial with Glyph
+	→ Version: 1.0
+	→ Made By: edwynxero
+	---------------------------------------------
 
 	Description:
 	------------
-		- Uses Glyph of Fortification when tower in range and attack it!
+		Uses Glyph of Fortification when tower in range and attack it!
 
 		Note: Be sure that you don't bind a key you generally will use for something else.
+
+	Change log:
+	-----------
+		» Version 1.0 : Initial Release
 ]]--
 
---LIBRARIES
+--→ LIBRARIES
 require("libs.ScriptConfig")
 
---CONFIG
+--→ CONFIG
 local config = ScriptConfig.new()
 config:SetParameter("Tower_deny_bind", "K", config.TYPE_HOTKEY)
 config:Load()
 
---SETTINGS
+--→ SETTINGS
 local monitor    = client.screenSize.x/1600
 local denyKey    = config.Tower_deny_bind
 local registered = false
 
---CODE
+--→ CODE
 local denyTower  = nil
 local denyActive = false
 local glyphState = 0
@@ -40,7 +45,7 @@ end
 local F14        = drawMgr:CreateFont("F14","Tahoma",14*monitor,550*monitor)
 local statusText = drawMgr:CreateText(10*monitor,610*monitor,-1,"( Key: " .. hotkeyText .. " ) Deny Towers In Range: OFF",F14)
 
---[[Loading Script...]]
+--→ Load Script
 function onLoad()
 	if PlayingGame() then
 		local me = entityList:GetMyHero()
@@ -55,7 +60,7 @@ function onLoad()
 	end
 end
 
---check if denyKey is pressed
+--→ check if "deny key" is toggled
 function Key(msg,code)
 	if client.chat or client.console or client.loading then return end
 	if IsKeyDown(denyKey) then
