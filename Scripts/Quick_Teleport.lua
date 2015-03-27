@@ -1,34 +1,39 @@
 --<<Quick Teleport to Base | Version: 1.0>>
 --[[
-	--------------------------------------
-	| Quick Teleport Script by edwynxero |
-	--------------------------------------
-	============= Version 1.0 ============
+	------------------------------------------
+	→ Script : Quick Teleport
+	→ Version: 1.0
+	→ Made By: edwynxero
+	------------------------------------------
 
 	Description:
 	------------
 		Teleports your hero to base when pressed
 
 		Note: Be sure that you don't bind a key you generally will use for something else.
+
+	Change log:
+	-----------
+		» Version 1.0 : Initial Release
 ]]--
 
---LIBRARIES
+--→ LIBRARIES
 require("libs.ScriptConfig")
 
---CONFIG
+--→ CONFIG
 local config = ScriptConfig.new()
 config:SetParameter("TeleportBind", "T", config.TYPE_HOTKEY)
 config:Load()
 
---SETTINGS
+--→ SETTINGS
 local teleportKey = config.TeleportBind
 local registered  = false
 
---CODE
+--→ CODE
 local baseLoc        = nil
 local teleportActive = false
 
---[[Loading Script...]]
+--→ Load Script
 function onLoad()
 	if PlayingGame() then
 		local me = entityList:GetMyHero()
@@ -50,7 +55,7 @@ function onLoad()
 	end
 end
 
---check if teleportKey is pressed
+--→ check if "teleport key" is pressed
 function Key(msg,code)
 	if client.chat or client.console or client.loading then return end
 	if code == teleportKey then
