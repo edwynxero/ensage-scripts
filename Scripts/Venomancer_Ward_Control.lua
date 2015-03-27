@@ -67,11 +67,11 @@ function Main(tick)
 	local abilityName = me:FindSpell("venomancer_plague_ward")
 
 	--→ get visible enemies
-	local enemies 	  = entityList:GetEntities({type=LuaEntity.TYPE_HERO,visible = true, alive = true, team = me:GetEnemyTeam(),illusion=false})
+	local enemies     = entityList:GetEntities({type=LuaEntity.TYPE_HERO,visible = true, alive = true, team = me:GetEnemyTeam(),illusion=false})
 	--→ get creeps in range
-	local creeps 	  = entityList:GetEntities({classId=CDOTA_BaseNPC_Creep_Lane,alive=true,visible=true})
+	local creeps      = entityList:GetEntities({classId=CDOTA_BaseNPC_Creep_Lane,alive=true,visible=true})
 	--→ get visible Plague Wards
-	local ward 		  = entityList:GetEntities({classId=CDOTA_BaseNPC_Venomancer_PlagueWard,alive = true,visible = true,controllable=true})
+	local ward        = entityList:GetEntities({classId=CDOTA_BaseNPC_Venomancer_PlagueWard,alive = true,visible = true,controllable=true})
 
 	for i,v in ipairs(enemies) do
 		if not v:DoesHaveModifier("modifier_venomancer_poison_sting_ward") and v.health > 0 and slowEnemy then
