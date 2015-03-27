@@ -1,49 +1,50 @@
 --<<Epic Skyrath Mage Combo | Version: 1.2>>
 --[[
-	--------------------------------------
-	| Skywrath Combo Script by edwynxero |
-	--------------------------------------
-	============= Version 1.2 ============
+	------------------------------------------
+	→ Script : Skywrath Combo
+	→ Version: 1.2
+	→ Made By: edwynxero
+	------------------------------------------- 
 
 	Description:
 	------------
 		Skywrath Mage Ultimate Combo
-			- Arcane Bolt
-			- Ancient Seal
-			- Concussive Shot
-			- Rod of Atos (if MysticFlare enabled)
-			- Mystic Flare (if enabled)
+			» Arcane Bolt
+			» Ancient Seal
+			» Concussive Shot
+			» Rod of Atos (if MysticFlare enabled)
+			» Mystic Flare (if enabled)
 		Features
-			- Excludes Illusions
-			- One Key Combo Toggle
+			» Excludes Illusions
+			» One Key Combo Toggle
 		*Has enabling function for using ultimate in combo, but currently works perfectly only on static heroes (i.e. stunned)
 ]]--
 
---LIBRARIES
+--→ LIBRARIES
 require("libs.ScriptConfig")
 require("libs.TargetFind")
 
---CONFIG
+--→ CONFIG
 config = ScriptConfig.new()
 config:SetParameter("ComboKey", "D", config.TYPE_HOTKEY)
 config:SetParameter("UseMysticFlare", false)
 config:SetParameter("TargetLeastHP", false)
 config:Load()
 
---SETTINGS
+--→ SETTINGS
 local comboKey       = config.ComboKey
 local useMysticFlare = config.UseMysticFlare
 local getLeastHP     = config.TargetLeastHP
 local registered	 = false
 local range          = 900
 
---CODE
+--→ CODE
 local sleepMain     = 0
 local currentMain   = 0
 local target        = nil
 local active        = false
 
---[[Loading Script...]]
+--→ Load Script
 function onLoad()
 	if PlayingGame() then
 		local me = entityList:GetMyHero()
@@ -58,7 +59,7 @@ function onLoad()
 	end
 end
 
---check if comboKey is pressed
+--→  check if "combo key" is pressed
 function Key(msg,code)
 	if client.chat or client.console or client.loading then return end
 	if code == comboKey then
@@ -73,24 +74,24 @@ function Main(tick)
 	local me = entityList:GetMyHero()
 	if not (me and active) then return end
 
-	-- Get hero abilities --
+	--→ get hero abilities
 	local ArcaneBolt     = me:GetAbility(1)
 	local ConcussiveShot = me:GetAbility(2)
 	local AncientSeal    = me:GetAbility(3)
 	local MysticFlare    = me:GetAbility(4)
 
-	-- Get visible enemies --
+	--→ et visible enemies
 	local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO, visible = true, alive = true, team = me:GetEnemyTeam(), illusion=false})
 
 	for i,v in ipairs(enemies) do
 		local distance = GetDistance2D(v,me)
 
-		-- Get a valid target in range --
+		--→ get a valid target in range
 		if not target and distance < range then
 			target = v
 		end
 
-		-- Get the closest / least health target --
+		--→ get the closest / least health target
 		if target then
 			if getLeastHP and distance < range then
 				target = targetFind:GetLowestEHP(range,"magic")
@@ -103,7 +104,7 @@ function Main(tick)
 		end
 	end
 
-	-- Do the combo! --
+	--→ do the combo!
 	if target and me.alive then
 		CastSpell(ArcaneBolt, target)
 		CastSpell(AncientSeal, target)
