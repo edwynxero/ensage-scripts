@@ -9,13 +9,13 @@
     Description:
     ------------
         Auto hookshot with prediction:
-            - When hotkey pressed Clockwork will auto hookshot enemy whithin hookshot range and with lowest HP.
-            - Excludes Illusions
+            » When hotkey pressed Clockwork will auto hookshot enemy whithin hookshot range and with lowest HP.
+            » Excludes Illusions
         Auto combo after a succesfull hookshot:
-            - Clockwork will auto Power Cogs + Battery Assault + Blade Mail (If there).
+            » Clockwork will auto Power Cogs + Battery Assault + Blade Mail (If there).
         To-do:
-            - If enemy can escape check.
-            - If enemy use cyclone after being hooked, Clockwork will automaticly do the combo after landing.
+            » If enemy can escape check.
+            » If enemy use cyclone after being hooked, Clockwork will automaticly do the combo after landing.
 
     Change log:
     -----------
