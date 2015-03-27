@@ -1,30 +1,22 @@
 --<<Automatic Steal/Deny Aegis (Reworked) | Version: 1.0>>
 --[[
-	---------------------------------------
-	| Automatic Aegis Script by edwynxero |
-	---------------------------------------
-	============= Version 1.0 =============
+	----------------------------------
+	→ Script : Automatic Aegis Script 
+	→ Version: 1.0
+	→ Made By: edwynxero
+	----------------------------------
 
 	Description:
 	------------
-		Heroes ToDo :
-			===Steal===
-			- Earth Spirit Combo
-			- Spectre(Haunt -> Reality illusion closest to aegis->steal->spectral dagger out)
-			====Deny===
-			- Lycan         (Invisible Wolves)
-			- Broodmother   (Spiderlings)
-			- Enigma        (Demonic Conversions)
-			- Invoker       (Forged Spirits)
-			- Lone Druid    (Bear)
-			- Naga Siren    (Illusions)
-			- Nature Profet (Nature Call)
-			- Shadow Shaman (Serpent ward)
-			- TerrorBlade   (Illusions)
-			- Visage        (Familiars)
-			- Warlock       (Chaotic Offering Roshan-pit)
+		Steals or Denies the aegis according to skills available and within range from rosh pit.
 
-		Stealing:
+	Change log:
+	-----------
+		» Version 1.0 : Intial Release (Rework of old script)
+
+	Other Information:
+	------------------
+		Stealing using following spell(s):
 			- Blink Dagger
 			- Antimage      (Blink)
 			- Clockwork     (Hookshot)
@@ -37,22 +29,39 @@
 			- Storm Spirit  (Ball Lightning)
 			- Queen of Pain (Blink)
 
-		Deny:
+		Denies using following spell(s):
 			- Sniper(shrapnel, deny)
 			- Spawn Plague Ward and Deny
+
+		Heroes which doesn't works.
+			→ Steal
+				- Earth Spirit Combo
+				- Spectre(Haunt -> Reality illusion closest to aegis->steal->spectral dagger out)
+			→ Deny
+				- Lycan         (Invisible Wolves)
+				- Broodmother   (Spiderlings)
+				- Enigma        (Demonic Conversions)
+				- Invoker       (Forged Spirits)
+				- Lone Druid    (Bear)
+				- Naga Siren    (Illusions)
+				- Nature Profet (Nature Call)
+				- Shadow Shaman (Serpent ward)
+				- TerrorBlade   (Illusions)
+				- Visage        (Familiars)
+				- Warlock       (Chaotic Offering Roshan-pit)
 ]]--
 
---LIBRARIES
+--→ LIBRARIES
 require("libs.Utils")
 require("libs.ScriptConfig")
 
---CONFIG
+--→ CONFIG
 local config = ScriptConfig.new()
 config:SetParameter("StealAegis", "J", config.TYPE_HOTKEY)
 config:SetParameter("DenyAegis", "K", config.TYPE_HOTKEY)
 config:Load()
 
---SETTINGS
+--→ SETTINGS
 local monitor     = client.screenSize.x/1600
 local stealKey    = config.StealAegis
 local denyKey     = config.DenyAegis
@@ -60,8 +69,8 @@ local stealActive = false
 local denyActive  = false
 local registered  = false
 
---CODE
-local hotkeyText -- toggleKey might be a keycode number, so string.char will throw an error!!
+--→ CODE
+local hotkeyText -- toggleKey might be a keycode number, so string.char doesn't throws an error!!
 if string.byte("A") <= stealKey and stealKey <= string.byte("Z") then
 	hotkeyText = string.char(stealKey) .." | "..string.char(denyKey)
 else
@@ -74,7 +83,7 @@ local aegisLoc   = Vector(4164,-1831,0)
 local spellLoc   = Vector(4077,-2143,0)
 local aegisDeny  = nil
 
---[[Loading Script...]]
+--→ Load Script
 function onLoad()
 	if PlayingGame() then
 		local me = entityList:GetMyHero()
@@ -90,7 +99,7 @@ function onLoad()
 	end
 end
 
---check if steal/deny Key is pressed
+--→ check if steal/deny Key is pressed
 function Key(msg,code)
 	if client.chat or client.console or client.loading then return end
 	if IsKeyDown(stealKey) then
