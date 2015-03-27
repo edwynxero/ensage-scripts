@@ -1,43 +1,44 @@
 --<<(Deny / Last Hit) Creeps, debuffs enemy with Plague Ward(s) | Version: 1.1>>
 --[[
-	------------------------------------------------
-	| Venomancer Wards Control Script by edwynxero |
-	------------------------------------------------
-	================== Version 1.1 =================
-
+	------------------------------------------
+	→ Script : Venomancer Wards Control
+	→ Version: 1.1
+	→ Made By: edwynxero
+	-------------------------------------------
+	
 	Description:
 	------------
 		Venomancer Plague Wards
-			- Attacks Hero without de-buff
-			- Deny ally creeps
-			- Last Hit enemy creeps
+			» Attacks Hero without de-buff
+			» Deny ally creeps
+			» Last Hit enemy creeps
 		Features
-			- Excludes Illusions
-			- Enable / Disable feature for all procs
+			» Excludes Illusions
+			» Enable / Disable feature for all procs
 ]]--
 
---LIBRARIES
+--→ LIBRARIES
 require("libs.ScriptConfig")
 require("libs.Utils")
 
---CONFIG
+--→ CONFIG
 config = ScriptConfig.new()
 config:SetParameter("SlowEnemies", true)
 config:SetParameter("DenyWithWards", true)
 config:SetParameter("LastHitWithWards", true)
 config:Load()
 
---SETTINGS
+--→ SETTINGS
 local slowEnemy   = config.SlowEnemies
 local wardLastHit = config.LastHitWithWards
 local wardDeny    = config.DenyWithWards
 local registered  = false
 
---CODE
+--→ CODE
 local damage      = {10,19,29,38}
 damage[0] 	      = 0
 
---[[Loading Script...]]
+--→ Load Script
 function onLoad()
 	if PlayingGame() then
 		local me = entityList:GetMyHero()
@@ -57,14 +58,14 @@ function Main(tick)
 	local me = entityList:GetMyHero()
 	if not me then return end Sleep(125)
 
-	-- Get hero abilities --
+	--→ get hero abilities
 	local abilityName = me:FindSpell("venomancer_plague_ward")
 
-	-- Get visible enemies --
+	--→ get visible enemies
 	local enemies 	  = entityList:GetEntities({type=LuaEntity.TYPE_HERO,visible = true, alive = true, team = me:GetEnemyTeam(),illusion=false})
-	-- Get creeps in range
+	--→ get creeps in range
 	local creeps 	  = entityList:GetEntities({classId=CDOTA_BaseNPC_Creep_Lane,alive=true,visible=true})
-	-- Get visible Plague Wards
+	--→ get visible Plague Wards
 	local ward 		  = entityList:GetEntities({classId=CDOTA_BaseNPC_Venomancer_PlagueWard,alive = true,visible = true,controllable=true})
 
 	for i,v in ipairs(enemies) do
