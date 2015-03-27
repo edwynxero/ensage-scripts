@@ -1,42 +1,43 @@
 --<<Epic Phantom Assassin Combo | Version: 1.2>>
 --[[
-	----------------------------------------------
-	| Phantom Assassin Combo Script by edwynxero |
-	----------------------------------------------
-	================= Version 1.2 ================
-
+	------------------------------------------
+	→ Script : Phantom Assassin Combo
+	→ Version: 1.2
+	→ Made By: edwynxero
+	-------------------------------------------
+	
 	Description:
 	------------
 		Phantom Assassin Ultimate Combo
-			- Stifling Dagger
-			- Phantom Strike
-			- Abbysal Blade (work in progress)
+			» Stifling Dagger
+			» Phantom Strike
+			» Abbysal Blade (work in progress)
 		Features
-			- Excludes Illusions
-			- One Key Combo Initiator (keep key pressed to continue combo)
+			» Excludes Illusions
+			» One Key Combo Initiator (keep key pressed to continue combo)
 ]]--
 
---LIBRARIES
+--→ LIBRARIES
 require("libs.ScriptConfig")
 require("libs.TargetFind")
 
---CONFIGURATION
+--→ CONFIGURATION
 config = ScriptConfig.new()
 config:SetParameter("ComboKey", "R", config.TYPE_HOTKEY)
 config:SetParameter("TargetLeastHP", false)
 config:Load()
 
---SETTINGS
+--→ SETTINGS
 local comboKey 		= config.ComboKey
 local getLeastHP 	= config.TargetLeastHP
 local registered	= false
 local range 		= 1000
 
---CODE
+--→ CODE
 local target	    = nil
 local active	    = false
 
---[[Loading Script...]]
+--→ Load Script
 function onLoad()
 	if PlayingGame() then
 		local me = entityList:GetMyHero()
@@ -51,7 +52,7 @@ function onLoad()
 	end
 end
 
---check if comboKey is pressed
+--→ check if "combo key" is pressed
 function Key(msg,code)
 	if client.chat or client.console or client.loading then return end
 	if code == comboKey then
@@ -66,24 +67,24 @@ function Main(tick)
 	local myPlayer = entityList:GetMyPlayer().selection[1]
 	if not (me and active) then return end
 
-	-- Get hero abilities --
+	--→ get hero abilities
 	local StiflingDagger = me:GetAbility(1)
 	local PhantomStrike = me:GetAbility(2)
 
-	-- Get visible enemies --
+	--→ get visible enemies
 	local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO, visible = true, alive = true, team = me:GetEnemyTeam(), illusion=false})
 
 	for i,v in ipairs(enemies) do
 		local distance = GetDistance2D(v,me)
 
-		-- Get a valid target in range --
+		--→ get a valid target in range
 		if not target and distance < range then
 			target = v
 		elseif distance > range then
 			target = nil
 		end
 
-		-- Get the lowest health, if not get closest--
+		--→ get the lowest health, if not get closest
 		if target then
 			if target.alive and target.visible then
 				if getLeastHP then
@@ -97,7 +98,7 @@ function Main(tick)
 		end
 	end
 
-	-- Do the combo! --
+	--→ Do the combo!
 	if target and me.alive and not me:IsChanneling() then
 		if myPlayer and myPlayer.handle == me.handle then
 			CastSpell(StiflingDagger,target)
