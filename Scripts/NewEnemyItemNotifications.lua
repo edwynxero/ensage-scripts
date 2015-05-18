@@ -17,7 +17,7 @@ function Items(event)
     if event.name == "dota_inventory_changed" then
         local me = entityList:GetMyHero()
         if me then
-            local enemy = entityList:FindEntities(function (en) return en.item and not en.recipe and en.abilityData.itemCost >= 1000 and en.purchaser ~= nil and not en.owner.illusion and en.owner.name ~= "npc_dota_hero_roshan" and en.purchaser.team = me.team and not item[en.handle] end)
+            local enemy = entityList:FindEntities(function (en) return en.item and not en.recipe and en.abilityData.itemCost >= 1000 and en.purchaser ~= nil and not en.owner.illusion and en.owner.name ~= "npc_dota_hero_roshan" and en.purchaser.team ~= me.team and not item[en.handle] end)
             for i,v in ipairs(enemy) do
                 item[v.handle] = true
                 GenerateSideMSG(v.purchaser.name:gsub("npc_dota_hero_",""),v.name:gsub("item_",""))
